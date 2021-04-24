@@ -1,27 +1,36 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <Board />
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import HelloWorld from './components/HelloWorld.vue';
+import Area from './components/Area.vue';
+import Board from './components/Board.vue';
 
 @Options({
+  data() {
+    return {
+      msg: 'Damian',
+    };
+  },
   components: {
-    HelloWorld,
+    Area,
+    Board,
   },
 })
 export default class App extends Vue {}
 </script>
 
 <style lang="scss">
+body {
+  margin: 0;
+  background-image: url('./assets/images/wallpaper.png');
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 </style>
