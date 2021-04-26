@@ -1,7 +1,12 @@
 <template>
   <div class="board">
     <div class="fieldPlay">
-      <Area v-for="n in 64" :key="n" :position="positionArea(n)" />
+      <Area v-for="n in 64" :key="n"
+            :position="getPosition(n)"
+            :figure="board[Math.floor((n - 1) / 8)][(n - 1) % 8]"
+            :id="getPosition(n).index"
+            @click="handlePosition(n)"
+      />
     </div>
 
     <div class="groupFieldHorizontally">
@@ -16,7 +21,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Position from '@/assets/interface/Position';
+import Position, * as constructPos from '@/assets/interface/Position';
+import Figure, * as FigureModule from '@/assets/interface/Figure';
+import TemplateStartBoard from '@/assets/TemplateStartBoard';
 import Area from './Area.vue';
 
 export default defineComponent({
@@ -24,14 +31,24 @@ export default defineComponent({
   components: {
     Area,
   },
+  data() {
+    return {
+      board: [] as (Figure | undefined)[][],
+    };
+  },
   methods: {
-    positionArea(n: number): Position {
-      return {
-        horizontally: String.fromCharCode(65 + Math.floor((n - 1) / 8)),
-        // eslint-disable-next-line no-mixed-operators
-        perpendicularly: (n - 1) % 8 + 1,
-      };
+    getPosition(n: number): Position {
+      return constructPos.createPosition(n);
     },
+    handlePosition(n: number) {
+      const pos = constructPos.createPosition(n);
+      const ns = pos.handlePosition();
+      console.log(ns);
+    },
+  },
+  created(): void {
+    this.board = TemplateStartBoard;
+    console.log(this.board);
   },
 });
 </script>
