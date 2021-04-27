@@ -19,6 +19,8 @@ interface Figure {
   color: Color,
   path: string,
   position: Position,
+  possibleMoves(board: (Figure | undefined)[][]): Position[],
+  move(board: (Figure | undefined)[][], newPosition: Position): void,
 }
 
 export default Figure;

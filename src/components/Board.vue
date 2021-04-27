@@ -4,8 +4,11 @@
       <Area v-for="n in 64" :key="n"
             :position="getPosition(n)"
             :figure="board[Math.floor((n - 1) / 8)][(n - 1) % 8]"
-            :id="getPosition(n).index"
-            @click="handlePosition(n)"
+            :active="active"
+            :board="board"
+            :player="player"
+            @changeActive="changeActiveElement"
+            @changePlayer="changeActivePlayer"
       />
     </div>
 
@@ -34,16 +37,36 @@ export default defineComponent({
   data() {
     return {
       board: [] as (Figure | undefined)[][],
+      active: null as (Figure | null),
+      player: FigureModule.Color.white as FigureModule.Color,
     };
   },
   methods: {
     getPosition(n: number): Position {
       return constructPos.createPosition(n);
     },
-    handlePosition(n: number) {
-      const pos = constructPos.createPosition(n);
-      const ns = pos.handlePosition();
-      console.log(ns);
+    changeActiveElement(element: Figure) {
+      if (element !== this.active) {
+        if (this.active === null) {
+          this.active = element;
+        } else {
+          // eslint-disable-next-line no-unused-expressions
+          this.active?.possibleMoves(this.board).forEach((el) => {
+            // eslint-disable-next-line no-unused-expressions
+            el.handlePosition()?.classList.remove('possibleMove');
+          });
+          // eslint-disable-next-line no-unused-expressions
+          this.active.position.handlePosition()?.classList.remove('active');
+          this.active = element;
+        }
+      } else {
+        this.active = null;
+      }
+      console.log(this.active);
+    },
+    changeActivePlayer():void {
+      if (this.player === FigureModule.Color.white) this.player = FigureModule.Color.black;
+      else this.player = FigureModule.Color.white;
     },
   },
   created(): void {

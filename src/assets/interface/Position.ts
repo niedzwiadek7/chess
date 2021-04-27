@@ -11,7 +11,7 @@ export function createPosition(per: number, hor?: (string | undefined)): Positio
     perpendicularly: 2,
     index: 'A2',
     handlePosition(): HTMLDivElement | null {
-      return document.querySelector(`#${this.index}`);
+      return document.querySelector(`#${this.index}`)?.querySelector('.wrapper') || null;
     },
   };
 
