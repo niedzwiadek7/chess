@@ -8,7 +8,7 @@
             :board="board"
             :player="player"
             @changeActive="changeActiveElement"
-            @changePlayer="changeActivePlayer"
+            @move="changeActivePlayer"
       />
     </div>
 
@@ -26,7 +26,8 @@
 import { defineComponent } from 'vue';
 import Position, * as constructPos from '@/assets/interface/Position';
 import Figure, * as FigureModule from '@/assets/interface/Figure';
-import TemplateStartBoard from '@/assets/TemplateStartBoard';
+import TemplateStartBoard, * as DependenciesBoard from '@/assets/TemplateStartBoard';
+import Player from '@/assets/interface/Player';
 import Area from './Area.vue';
 
 export default defineComponent({
@@ -39,6 +40,8 @@ export default defineComponent({
       board: [] as (Figure | undefined)[][],
       active: null as (Figure | null),
       player: FigureModule.Color.white as FigureModule.Color,
+      black: DependenciesBoard.createPlayer(FigureModule.Color.black) as Player,
+      white: DependenciesBoard.createPlayer(FigureModule.Color.white) as Player,
     };
   },
   methods: {
@@ -62,11 +65,32 @@ export default defineComponent({
       } else {
         this.active = null;
       }
-      console.log(this.active);
     },
     changeActivePlayer():void {
-      if (this.player === FigureModule.Color.white) this.player = FigureModule.Color.black;
-      else this.player = FigureModule.Color.white;
+      this.black.figures = DependenciesBoard.findFigure(FigureModule.Color.black, this.board);
+      this.black.possibleMoves = DependenciesBoard.findPosition(this.black.figures, this.board);
+      this.white.figures = DependenciesBoard.findFigure(FigureModule.Color.white, this.board);
+      this.white.possibleMoves = DependenciesBoard.findPosition(this.white.figures, this.board);
+
+      if (this.player === FigureModule.Color.white) {
+        this.black.king = DependenciesBoard.findKing(this.black.figures);
+        // eslint-disable-next-line max-len
+        this.black.isChecked = DependenciesBoard.isChecked(this.white.possibleMoves, this.black.king);
+        // eslint-disable-next-line no-unused-expressions
+        if (this.black.isChecked) this.black.king.position.handlePosition()?.classList.add('checked');
+        this.player = FigureModule.Color.black;
+        // eslint-disable-next-line no-unused-expressions
+        this.white.king.position.handlePosition()?.classList.remove('checked');
+      } else {
+        this.white.king = DependenciesBoard.findKing(this.white.figures);
+        // eslint-disable-next-line max-len
+        this.white.isChecked = DependenciesBoard.isChecked(this.black.possibleMoves, this.white.king);
+        // eslint-disable-next-line no-unused-expressions
+        if (this.white.isChecked) this.white.king.position.handlePosition()?.classList.add('checked');
+        this.player = FigureModule.Color.white;
+        // eslint-disable-next-line no-unused-expressions
+        this.black.king.position.handlePosition()?.classList.remove('checked');
+      }
     },
   },
   created(): void {

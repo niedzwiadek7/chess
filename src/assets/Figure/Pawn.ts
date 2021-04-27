@@ -60,7 +60,6 @@ export default class Pawn implements Figure {
       this.callAttack(possibleMoves, board, 1, -1);
       this.callAttack(possibleMoves, board, -1, -1);
     }
-    console.log(possibleMoves);
 
     return possibleMoves;
   }

@@ -5,6 +5,52 @@ import Knight from '@/assets/Figure/Knight';
 import Pawn from '@/assets/Figure/Pawn';
 import Queen from '@/assets/Figure/Queen';
 import Rook from '@/assets/Figure/Rook';
+import Player, * as PlayerModule from '@/assets/interface/Player';
+import Position from '@/assets/interface/Position';
+
+export function findFigure(color: FigureModule.Color, board: (Figure | undefined)[][]): Figure[] {
+  const figures: Figure[] = [];
+
+  board.forEach((el) => {
+    el.forEach((elem) => {
+      if (elem?.color === color) figures.push(elem);
+    });
+  });
+
+  return figures;
+}
+
+export function findPosition(figures: Figure[], board: (Figure | undefined)[][]): Position[] {
+  const pos: Position[] = [];
+
+  figures.forEach((el) => {
+    const helpPosition: Position[] = el.possibleMoves(board);
+    helpPosition.forEach((elem) => {
+      if (pos.findIndex((element) => element.index === elem.index) === -1) pos.push(elem);
+    });
+  });
+
+  return pos;
+}
+
+export function isChecked(positions: Position[], kingOpponent: Figure): boolean {
+  if (positions.findIndex((el) => el.index === kingOpponent.position.index) !== -1) {
+    return true;
+  }
+  return false;
+}
+
+export function findKing(figures: Figure[]): Figure {
+  let king: Figure = new King(FigureModule.Color.black, 'A', 1);
+
+  figures.forEach((el) => {
+    if (el.type === FigureModule.Types.king) {
+      king = el;
+    }
+  });
+
+  return king;
+}
 
 const board: (Figure | undefined)[][] = [[new Rook(FigureModule.Color.white, 'A', 1),
   new Knight(FigureModule.Color.white, 'B', 1),
@@ -42,5 +88,20 @@ const board: (Figure | undefined)[][] = [[new Rook(FigureModule.Color.white, 'A'
   new Knight(FigureModule.Color.black, 'G', 8), new Rook(FigureModule.Color.black, 'H', 8),
 ],
 ];
+
+export function createPlayer(color: FigureModule.Color): Player {
+  const col = color;
+  const fig = findFigure(color, board);
+  const pos = findPosition(fig, board);
+  const kin = findKing(fig);
+  console.log(kin);
+  return {
+    color: col,
+    figures: fig,
+    possibleMoves: pos,
+    isChecked: isChecked(pos, kin),
+    king: kin,
+  } as Player;
+}
 
 export default board;

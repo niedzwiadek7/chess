@@ -89,7 +89,7 @@ export default defineComponent({
         // eslint-disable-next-line no-unused-expressions
         this.active?.move(board, this.position);
         this.$emit('changeActive', this.active);
-        this.$emit('changePlayer');
+        this.$emit('move');
       } else console.log('no nie');
     },
   },
@@ -124,6 +124,10 @@ export default defineComponent({
 
   .possibleMove {
     background-color: rgba(0, 255, 0, 0.2);
+  }
+
+  .checked {
+    background-color: rgba(255, 0, 0, 0.3);
   }
 
 }
