@@ -3,9 +3,10 @@
     <div class="fieldPlay">
       <Area v-for="n in 64" :key="n"
             :position="getPosition(n)"
-            :figure="board[Math.floor((n - 1) / 8)][(n - 1) % 8]"
-            :id="getPosition(n).index"
-            @click="handlePosition(n)"
+            :active = "active"
+            :player = "player"
+            @active = "activated"
+            @move = "move"
       />
     </div>
 
@@ -21,9 +22,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Position, * as constructPos from '@/assets/interface/Position';
-import Figure, * as FigureModule from '@/assets/interface/Figure';
+import Position from '@/assets/interface/Position';
 import TemplateStartBoard from '@/assets/TemplateStartBoard';
+// eslint-disable-next-line import/no-named-as-default,import/no-named-as-default-member
+import Player, * as PlayerModule from '@/assets/interface/Player';
+import Colour from '@/assets/enums/Colour';
+import * as FigureModule from '@/assets/interface/Figure';
 import Area from './Area.vue';
 
 export default defineComponent({
@@ -33,22 +37,48 @@ export default defineComponent({
   },
   data() {
     return {
-      board: [] as (Figure | undefined)[][],
+      board: [] as Position[][],
+      active: null as (Position | null),
+      white: Object as Player,
+      black: Object as Player,
+      player: Object as Player,
     };
   },
   methods: {
     getPosition(n: number): Position {
-      return constructPos.createPosition(n);
+      return this.board[Math.floor((n - 1) / 8)][(n - 1) % 8];
     },
-    handlePosition(n: number) {
-      const pos = constructPos.createPosition(n);
-      const ns = pos.handlePosition();
-      console.log(ns);
+    activated(position: Position) {
+      if (this.active === position) this.active = null;
+      else this.active = position;
+    },
+    move(positions: FigureModule.MoveFigure) {
+      // change player
+      if (this.player.colour === Colour.white) this.player = this.black;
+      else this.player = this.white;
+
+      // update information about players
+      this.white.figures = PlayerModule.findFigures(this.board, Colour.white);
+      this.black.figures = PlayerModule.findFigures(this.board, Colour.black);
+      // eslint-disable-next-line max-len
+      this.white.possibleMoves = PlayerModule.handleAllPossibleMoves(this.white.figures, this.board);
+      // eslint-disable-next-line max-len
+      this.black.possibleMoves = PlayerModule.handleAllPossibleMoves(this.black.figures, this.board);
     },
   },
   created(): void {
     this.board = TemplateStartBoard;
-    console.log(this.board);
+    this.black = PlayerModule.create(this.board, Colour.black);
+    this.white = PlayerModule.create(this.board, Colour.white);
+    this.player = this.white;
+  },
+  mounted(): void {
+    this.board.forEach((el) => {
+      el.forEach((elem) => {
+        // eslint-disable-next-line no-param-reassign
+        elem.handlePosition = document.querySelector(`#${elem.index}`)?.querySelector('.wrapper') || null;
+      });
+    });
   },
 });
 </script>

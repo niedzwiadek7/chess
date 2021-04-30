@@ -1,18 +1,22 @@
+// eslint-disable-next-line import/no-cycle
+import Figure from '@/assets/interface/Figure';
+
 interface Position {
   horizontally: string,
   perpendicularly: number,
   index: string,
-  handlePosition(): (HTMLDivElement | null),
+  handlePosition: (HTMLDivElement | null),
+  figure: (Figure | undefined),
 }
 
-export function createPosition(per: number, hor?: (string | undefined)): Position {
+export function
+createPosition(per: number, hor?: (string | undefined), figure?: (Figure | undefined)): Position {
   const schemaPosition: Position = {
     horizontally: 'A',
     perpendicularly: 2,
     index: 'A2',
-    handlePosition(): HTMLDivElement | null {
-      return document.querySelector(`#${this.index}`);
-    },
+    handlePosition: null,
+    figure,
   };
 
   if (hor !== undefined) {

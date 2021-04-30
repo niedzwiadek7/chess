@@ -1,4 +1,6 @@
+// eslint-disable-next-line import/no-cycle
 import Position from '@/assets/interface/Position';
+import Colour from '@/assets/enums/Colour';
 
 export enum Types {
   king = 'king',
@@ -9,16 +11,19 @@ export enum Types {
   pawn = 'pawn',
 }
 
-export enum Color {
-  white = 'white',
-  black = 'black',
+export interface MoveFigure {
+  oldPosition: Position,
+  newPosition: Position,
 }
 
 interface Figure {
   type: Types,
-  color: Color,
+  colour: Colour,
   path: string,
-  position: Position,
+  possibleMoving: Position[],
+  possibleBlocked: Position[],
+  possibleMoves(board: Position[][], actualPosition: Position): void,
+  move(oldPosition: Position, newPosition: Position): MoveFigure,
 }
 
 export default Figure;

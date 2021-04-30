@@ -1,23 +1,77 @@
 import Position, * as constructPos from '@/assets/interface/Position';
+import Colour from '@/assets/enums/Colour';
 import Figure, * as FigureModule from '../interface/Figure';
 
 export default class Rook implements Figure {
+  static includesInBoard(hor: number, per: number): boolean {
+    return hor >= 0 && hor < 8 && per >= 0 && per < 8;
+  }
+
   type: FigureModule.Types;
 
-  color: FigureModule.Color;
+  colour: Colour;
 
   path: string;
 
-  position: Position;
+  possibleMoving: Position[];
 
-  constructor(color: FigureModule.Color, hor: string, per: number) {
+  possibleBlocked: Position[];
+
+  constructor(colour: Colour) {
     this.type = FigureModule.Types.rook;
-    this.color = color as FigureModule.Color;
+    this.colour = colour;
     this.path = this.generatorPath();
-    this.position = constructPos.createPosition(per, hor);
+    this.possibleMoving = [];
+    this.possibleBlocked = [];
   }
 
   generatorPath(): string {
-    return `/figures/${this.color}/${this.type}.svg`;
+    return `/figures/${this.colour}/${this.type}.svg`;
+  }
+
+  callMove(posMoves: Position[], posBlocks: Position[], board: Position[][],
+    actualPosition: Position, hor: number, per: number): void {
+    let perpendicularly = actualPosition.perpendicularly + per - 1;
+    let horizontally = actualPosition.horizontally.charCodeAt(0) - 65 + hor;
+
+    while (Rook.includesInBoard(perpendicularly, horizontally)
+    && board[perpendicularly][horizontally].figure === undefined) {
+      posMoves.push(board[perpendicularly][horizontally]);
+      perpendicularly += per;
+      horizontally += hor;
+    }
+
+    if (Rook.includesInBoard(perpendicularly, horizontally)) {
+      posBlocks.push(board[perpendicularly][horizontally]);
+      if (board[perpendicularly][horizontally].figure?.colour !== this.colour) {
+        posMoves.push(board[perpendicularly][horizontally]);
+      }
+    }
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  possibleMoves(board: Position[][], actualPosition: Position): void {
+    const posMoves: Position[] = [];
+    const posBlocks: Position[] = [];
+
+    this.callMove(posMoves, posBlocks, board, actualPosition, 1, 0);
+    this.callMove(posMoves, posBlocks, board, actualPosition, -1, 0);
+    this.callMove(posMoves, posBlocks, board, actualPosition, 0, -1);
+    this.callMove(posMoves, posBlocks, board, actualPosition, 0, 1);
+
+    this.possibleBlocked = posBlocks;
+    this.possibleMoving = posMoves;
+  }
+
+  move(oldPosition: Position, newPosition: Position): FigureModule.MoveFigure {
+    // eslint-disable-next-line no-param-reassign
+    oldPosition.figure = undefined;
+    // eslint-disable-next-line no-param-reassign
+    newPosition.figure = this;
+
+    return {
+      oldPosition,
+      newPosition,
+    };
   }
 }
