@@ -22,7 +22,8 @@ interface Figure {
   path: string,
   possibleMoving: Position[],
   possibleBlocked: Position[],
-  possibleMoves(board: Position[][], actualPosition: Position): void,
+  possibleMoves(board: Position[][], actualPosition: Position,
+    checkingSecurity: boolean, king: Position): void,
   move(oldPosition: Position, newPosition: Position): MoveFigure,
 }
 

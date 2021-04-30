@@ -1,5 +1,7 @@
 import Position from '@/assets/interface/Position';
 import Colour from '@/assets/enums/Colour';
+import Player, * as PlayerModule from '@/assets/interface/Player';
+import safeMoving from '@/assets/Figure/Scripts/safeMoving';
 import Figure, * as FigureModule from '../interface/Figure';
 
 export default class Pawn implements Figure {
@@ -36,52 +38,69 @@ export default class Pawn implements Figure {
     return `/figures/${this.colour}/${this.type}.svg`;
   }
 
-  static callMove(posMoves: Position[], posBlock: Position[], board: Position[][],
-    actualPosition: Position, per: number): void {
+  callMove(posMoves: Position[], posBlock: Position[], board: Position[][],
+    actualPosition: Position, per: number, checkingSecurity: boolean, king: Position): void {
     const perpendicularly = actualPosition.perpendicularly + per - 1;
     const horizontally = actualPosition.horizontally.charCodeAt(0) - 65;
 
     if (Pawn.includesInBoard(horizontally, perpendicularly)
     && board[perpendicularly][horizontally].figure === undefined) {
-      posMoves.push(board[perpendicularly][horizontally]);
+      if (!checkingSecurity
+        || safeMoving(actualPosition, board[perpendicularly][horizontally], board, king, this)) {
+        posMoves.push(board[perpendicularly][horizontally]);
+      }
     } else {
       posBlock.push(board[perpendicularly][horizontally]);
     }
   }
 
   callAttack(posMoves: Position[], board: Position[][],
-    actualPosition: Position, hor: number, per: number): void {
+    actualPosition: Position, hor: number, per: number,
+    checkingSecurity: boolean, king: Position): void {
     const perpendicularly = actualPosition.perpendicularly + per - 1;
     const horizontally = actualPosition.horizontally.charCodeAt(0) - 65 + hor;
 
     if (Pawn.includesInBoard(horizontally, perpendicularly)
       && board[perpendicularly][horizontally].figure?.colour === this.wrongColour) {
-      posMoves.push(board[perpendicularly][horizontally]);
+      if (!checkingSecurity
+        || safeMoving(actualPosition, board[perpendicularly][horizontally], board, king, this)) {
+        posMoves.push(board[perpendicularly][horizontally]);
+      }
     }
   }
 
   // eslint-disable-next-line class-methods-use-this
-  possibleMoves(board: Position[][], actualPosition: Position): void {
+  possibleMoves(board: Position[][], actualPosition: Position,
+    checkingSecurity: boolean, king: Position): void {
     const possibleMoves: Position[] = [];
     const possibleBlocks: Position[] = [];
 
     if (this.colour === Colour.white) {
-      Pawn.callMove(possibleMoves, possibleBlocks, board, actualPosition, 1);
+      this.callMove(possibleMoves, possibleBlocks, board,
+        actualPosition, 1, checkingSecurity, king);
       if (this.firstMove && possibleMoves.length > 0) {
-        Pawn.callMove(possibleMoves, possibleBlocks, board, actualPosition, 2);
+        this.callMove(possibleMoves, possibleBlocks, board,
+          actualPosition, 2, checkingSecurity, king);
       }
-      this.callAttack(possibleMoves, board, actualPosition, 1, 1);
-      this.callAttack(possibleMoves, board, actualPosition, -1, 1);
+      this.callAttack(possibleMoves, board, actualPosition,
+        1, 1, checkingSecurity, king);
+      this.callAttack(possibleMoves, board, actualPosition, -1, 1, checkingSecurity, king);
     } else {
-      Pawn.callMove(possibleMoves, possibleBlocks, board, actualPosition, -1);
+      this.callMove(possibleMoves, possibleBlocks, board,
+        actualPosition, -1, checkingSecurity, king);
       if (this.firstMove && possibleMoves.length > 0) {
-        Pawn.callMove(possibleMoves, possibleBlocks, board, actualPosition, -2);
+        this.callMove(possibleMoves, possibleBlocks, board,
+          actualPosition, -2, checkingSecurity, king);
       }
-      this.callAttack(possibleMoves, board, actualPosition, 1, -1);
-      this.callAttack(possibleMoves, board, actualPosition, -1, -1);
+      this.callAttack(possibleMoves, board, actualPosition, 1, -1, checkingSecurity, king);
+      this.callAttack(possibleMoves, board,
+        actualPosition, -1, -1, checkingSecurity, king);
     }
 
     this.possibleMoving = possibleMoves;
+    this.possibleMoving.forEach((el) => {
+      el.attackedBy.push(actualPosition);
+    });
     this.possibleBlocked = possibleBlocks;
   }
 

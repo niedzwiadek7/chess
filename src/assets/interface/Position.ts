@@ -7,6 +7,7 @@ interface Position {
   index: string,
   handlePosition: (HTMLDivElement | null),
   figure: (Figure | undefined),
+  attackedBy: Position[],
 }
 
 export function
@@ -17,6 +18,7 @@ createPosition(per: number, hor?: (string | undefined), figure?: (Figure | undef
     index: 'A2',
     handlePosition: null,
     figure,
+    attackedBy: [],
   };
 
   if (hor !== undefined) {

@@ -1,6 +1,8 @@
 <template>
   <div class="area" :class="{ blankArea: isBlank() }" @click="activated()" :id="position.index">
-    <div class="wrapper" :class="[{ active: callActivated() }, { possibleMove: callMoving() }]">
+    <div class="wrapper"
+         :class="[{ active: callActivated() }, { possibleMove: callMoving() },
+         { isCheck: isChecking() }]">
       <img v-show="position.figure !== undefined" :src="position.figure?.path" alt="" />
     </div>
   </div>
@@ -52,6 +54,12 @@ export default defineComponent({
       return this.active !== null
       && this.active?.figure?.possibleMoving.findIndex((el) => el === this.position) !== -1;
     },
+    isChecking() {
+      return this.player.isChecked === true
+        && this.position.figure?.type === FigureModule.Types.king
+        && this.player.colour === this.position.figure?.colour
+        && this.position !== this.active;
+    },
   },
 });
 
@@ -84,6 +92,10 @@ export default defineComponent({
 
   .possibleMove {
     background-color: rgba(0, 255, 0, 0.15);
+  }
+
+  .isCheck {
+    background-color: rgba(255, 0, 0, 0.3);
   }
 }
 

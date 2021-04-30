@@ -1,5 +1,6 @@
 import Position, * as constructPos from '@/assets/interface/Position';
 import Colour from '@/assets/enums/Colour';
+import safeMoving from '@/assets/Figure/Scripts/safeMoving';
 import Figure, * as FigureModule from '../interface/Figure';
 
 export default class Bishop implements Figure {
@@ -30,13 +31,17 @@ export default class Bishop implements Figure {
   }
 
   callMove(posMoves: Position[], posBlocks: Position[], board: Position[][],
-    actualPosition: Position, hor: number, per: number): void {
+    actualPosition: Position, hor: number, per: number,
+    checkingSecurity: boolean, king: Position): void {
     let perpendicularly = actualPosition.perpendicularly + per - 1;
     let horizontally = actualPosition.horizontally.charCodeAt(0) - 65 + hor;
 
     while (Bishop.includesInBoard(perpendicularly, horizontally)
     && board[perpendicularly][horizontally].figure === undefined) {
-      posMoves.push(board[perpendicularly][horizontally]);
+      if (!checkingSecurity
+        || safeMoving(actualPosition, board[perpendicularly][horizontally], board, king, this)) {
+        posMoves.push(board[perpendicularly][horizontally]);
+      }
       perpendicularly += per;
       horizontally += hor;
     }
@@ -44,23 +49,30 @@ export default class Bishop implements Figure {
     if (Bishop.includesInBoard(perpendicularly, horizontally)) {
       posBlocks.push(board[perpendicularly][horizontally]);
       if (board[perpendicularly][horizontally].figure?.colour !== this.colour) {
-        posMoves.push(board[perpendicularly][horizontally]);
+        if (!checkingSecurity
+          || safeMoving(actualPosition, board[perpendicularly][horizontally], board, king, this)) {
+          posMoves.push(board[perpendicularly][horizontally]);
+        }
       }
     }
   }
 
   // eslint-disable-next-line class-methods-use-this
-  possibleMoves(board: Position[][], actualPosition: Position): void {
+  possibleMoves(board: Position[][], actualPosition: Position,
+    checkingSecurity: boolean, king: Position): void {
     const posMoves: Position[] = [];
     const posBlocks: Position[] = [];
 
-    this.callMove(posMoves, posBlocks, board, actualPosition, 1, 1);
-    this.callMove(posMoves, posBlocks, board, actualPosition, -1, 1);
-    this.callMove(posMoves, posBlocks, board, actualPosition, -1, -1);
-    this.callMove(posMoves, posBlocks, board, actualPosition, 1, -1);
+    this.callMove(posMoves, posBlocks, board, actualPosition, 1, 1, checkingSecurity, king);
+    this.callMove(posMoves, posBlocks, board, actualPosition, -1, 1, checkingSecurity, king);
+    this.callMove(posMoves, posBlocks, board, actualPosition, -1, -1, checkingSecurity, king);
+    this.callMove(posMoves, posBlocks, board, actualPosition, 1, -1, checkingSecurity, king);
 
     this.possibleBlocked = posBlocks;
     this.possibleMoving = posMoves;
+    this.possibleMoving.forEach((el) => {
+      el.attackedBy.push(actualPosition);
+    });
   }
 
   move(oldPosition: Position, newPosition: Position): FigureModule.MoveFigure {

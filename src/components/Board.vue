@@ -58,12 +58,29 @@ export default defineComponent({
       else this.player = this.white;
 
       // update information about players
+      this.board.forEach((elem) => {
+        elem.forEach((el) => {
+          // eslint-disable-next-line no-param-reassign
+          el.attackedBy = [];
+        });
+      });
       this.white.figures = PlayerModule.findFigures(this.board, Colour.white);
       this.black.figures = PlayerModule.findFigures(this.board, Colour.black);
-      // eslint-disable-next-line max-len
-      this.white.possibleMoves = PlayerModule.handleAllPossibleMoves(this.white.figures, this.board);
-      // eslint-disable-next-line max-len
-      this.black.possibleMoves = PlayerModule.handleAllPossibleMoves(this.black.figures, this.board);
+      this.white.king = PlayerModule.findKing(this.white.figures);
+      this.black.king = PlayerModule.findKing(this.black.figures);
+      if (this.player === this.black) {
+        // eslint-disable-next-line max-len
+        this.white.possibleMoves = PlayerModule.handleAllPossibleMoves(this.white.figures, this.board, this.white.king, false);
+        // eslint-disable-next-line max-len
+        this.black.possibleMoves = PlayerModule.handleAllPossibleMoves(this.black.figures, this.board, this.black.king, true);
+      } else {
+        // eslint-disable-next-line max-len
+        this.black.possibleMoves = PlayerModule.handleAllPossibleMoves(this.black.figures, this.board, this.black.king, false);
+        // eslint-disable-next-line max-len
+        this.white.possibleMoves = PlayerModule.handleAllPossibleMoves(this.white.figures, this.board, this.white.king, true);
+      }
+      this.white.isChecked = PlayerModule.isChecked(this.white.king);
+      this.black.isChecked = PlayerModule.isChecked(this.black.king);
     },
   },
   created(): void {

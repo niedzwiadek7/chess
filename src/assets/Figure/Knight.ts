@@ -1,5 +1,7 @@
 import Position from '@/assets/interface/Position';
 import Colour from '@/assets/enums/Colour';
+import Player from '@/assets/interface/Player';
+import safeMoving from '@/assets/Figure/Scripts/safeMoving';
 import Figure, * as FigureModule from '../interface/Figure';
 
 export default class Knight implements Figure {
@@ -34,31 +36,39 @@ export default class Knight implements Figure {
   }
 
   callMove(posMoves: Position[], board: Position[][],
-    actualPosition: Position, hor: number, per: number): void {
+    actualPosition: Position, hor: number, per: number,
+    checkingSecurity: boolean, king: Position): void {
     const perpendicularly = actualPosition.perpendicularly + per - 1;
     const horizontally = actualPosition.horizontally.charCodeAt(0) - 65 + hor;
 
     if (Knight.includesInBoard(horizontally, perpendicularly)
       && (board[perpendicularly][horizontally].figure?.colour === this.wrongColour
       || board[perpendicularly][horizontally].figure === undefined)) {
-      posMoves.push(board[perpendicularly][horizontally]);
+      if (!checkingSecurity
+        || safeMoving(actualPosition, board[perpendicularly][horizontally], board, king, this)) {
+        posMoves.push(board[perpendicularly][horizontally]);
+      }
     }
   }
 
   // eslint-disable-next-line class-methods-use-this
-  possibleMoves(board: Position[][], actualPosition: Position): void {
+  possibleMoves(board: Position[][], actualPosition: Position,
+    checkingSecurity: boolean, king: Position): void {
     const posMoves: Position[] = [];
 
-    this.callMove(posMoves, board, actualPosition, 1, 2);
-    this.callMove(posMoves, board, actualPosition, 2, 1);
-    this.callMove(posMoves, board, actualPosition, -1, 2);
-    this.callMove(posMoves, board, actualPosition, 2, -1);
-    this.callMove(posMoves, board, actualPosition, 1, -2);
-    this.callMove(posMoves, board, actualPosition, -2, 1);
-    this.callMove(posMoves, board, actualPosition, -1, -2);
-    this.callMove(posMoves, board, actualPosition, -2, -1);
+    this.callMove(posMoves, board, actualPosition, 1, 2, checkingSecurity, king);
+    this.callMove(posMoves, board, actualPosition, 2, 1, checkingSecurity, king);
+    this.callMove(posMoves, board, actualPosition, -1, 2, checkingSecurity, king);
+    this.callMove(posMoves, board, actualPosition, 2, -1, checkingSecurity, king);
+    this.callMove(posMoves, board, actualPosition, 1, -2, checkingSecurity, king);
+    this.callMove(posMoves, board, actualPosition, -2, 1, checkingSecurity, king);
+    this.callMove(posMoves, board, actualPosition, -1, -2, checkingSecurity, king);
+    this.callMove(posMoves, board, actualPosition, -2, -1, checkingSecurity, king);
 
     this.possibleMoving = posMoves;
+    this.possibleMoving.forEach((el) => {
+      el.attackedBy.push(actualPosition);
+    });
   }
 
   move(oldPosition: Position, newPosition: Position): FigureModule.MoveFigure {
