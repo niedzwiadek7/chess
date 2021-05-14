@@ -1,5 +1,7 @@
+import Types from '@/assets/enums/Types';
+import Colour from '@/assets/enums/Colour';
 import Position from '../../interface/Position';
-import Figure, * as FigureModule from '../../interface/Figure';
+import Figure from '../../interface/Figure';
 import Player from '../../interface/Player';
 
 export default function (oldPosition: Position, newPosition: Position,
@@ -13,10 +15,13 @@ export default function (oldPosition: Position, newPosition: Position,
     colour: figure.colour,
     figures: [newPosition],
   };
-  const opponent: Player = {};
+  const opponent: Player = {
+    colour: player.colour === Colour.white ? Colour.black : Colour.white,
+  };
 
   // handling king
   player.king = king;
+  if (figure.type === Types.king) player.king = newPosition;
 
   // handling dangerous figures
   opponent.figures = [];
@@ -49,20 +54,22 @@ export default function (oldPosition: Position, newPosition: Position,
       opponent.possibleMoves?.push(elem);
     });
   });
-  if (figure.type === FigureModule.Types.king) player.king = newPosition;
 
   // check checking
   const safe: boolean = opponent.possibleMoves.findIndex((el) => el === player.king) === -1;
 
   // clearing
-  if (figure.type === FigureModule.Types.king) player.king = oldPosition;
+  if (figure.type === Types.king) player.king = oldPosition;
   // eslint-disable-next-line no-param-reassign
   oldPosition.figure = figure;
   // eslint-disable-next-line no-param-reassign
   newPosition.figure = figureOnNewPosition;
   opponent.figures.forEach((el) => {
-    // eslint-disable-next-line no-param-reassign
-    el.attackedBy = [];
+    // eslint-disable-next-line no-unused-expressions
+    el.figure?.possibleMoving.forEach((posMove) => {
+      const place = posMove.attackedBy.findIndex((elem) => elem === el);
+      posMove.attackedBy.splice(place, 1);
+    });
     // eslint-disable-next-line no-unused-expressions
     el.figure?.possibleMoves(board, el, false, king);
   });

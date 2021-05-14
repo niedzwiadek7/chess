@@ -1,8 +1,8 @@
 <template>
-  <div class="area" :class="{ blankArea: isBlank() }" @click="activated()" :id="position.index">
+  <div class="area" :class="{ blankArea: isBlank }" @click="activated()" :id="position.index">
     <div class="wrapper"
-         :class="[{ active: callActivated() }, { possibleMove: callMoving() },
-         { isCheck: isChecking() }]">
+         :class="[{ active: callActivated }, { possibleMove: callMoving },
+         { isCheck: isChecking }]">
       <img v-show="position.figure !== undefined" :src="position.figure?.path" alt="" />
     </div>
   </div>
@@ -11,7 +11,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import Position from '@/assets/interface/Position';
-import * as FigureModule from '@/assets/interface/Figure';
+import Types from '@/assets/enums/Types';
 import Player from '@/assets/interface/Player';
 
 export default defineComponent({
@@ -33,30 +33,32 @@ export default defineComponent({
     },
   },
   methods: {
-    isBlank() {
-      return ((this.position.horizontally.charCodeAt(0)
-        + this.position.perpendicularly) % 2 !== 0);
-    },
     activated() {
-      if (this.position.figure !== undefined
-        && this.position.figure.colour === this.player.colour) {
+      if (this.position.figure?.colour === this.player.colour) {
         this.$emit('active', this.position);
       } else if (this.position.handlePosition?.classList.contains('possibleMove')) {
-        // eslint-disable-next-line max-len
-        this.$emit('move', this.active?.figure?.move(this.active, this.position));
+        // eslint-disable-next-line no-unused-expressions
+        this.active?.figure?.move(this.active, this.position);
+        this.$emit('move');
         this.$emit('active', this.active);
       }
     },
-    callActivated() {
+  },
+  computed: {
+    isBlank(): boolean {
+      return ((this.position.horizontally.charCodeAt(0)
+        + this.position.perpendicularly) % 2 !== 0);
+    },
+    callActivated(): boolean {
       return this.position === this.active;
     },
-    callMoving() {
+    callMoving(): boolean {
       return this.active !== null
-      && this.active?.figure?.possibleMoving.findIndex((el) => el === this.position) !== -1;
+        && this.active?.figure?.possibleMoving.findIndex((el) => el === this.position) !== -1;
     },
-    isChecking() {
+    isChecking(): boolean {
       return this.player.isChecked === true
-        && this.position.figure?.type === FigureModule.Types.king
+        && this.position.figure?.type === Types.king
         && this.player.colour === this.position.figure?.colour
         && this.position !== this.active;
     },

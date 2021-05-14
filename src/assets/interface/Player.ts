@@ -1,9 +1,9 @@
 import Colour from '@/assets/enums/Colour';
 import Position from '@/assets/interface/Position';
-import * as FigureModule from '@/assets/interface/Figure';
+import Types from '@/assets/enums/Types';
 
 interface Player {
-  colour?: Colour,
+  colour: Colour,
   figures?: Position[],
   possibleMoves?: Position[],
   king?: Position,
@@ -26,7 +26,7 @@ export function findKing(figures: Position[]): Position {
   let king: unknown;
 
   figures.forEach((el) => {
-    if (el.figure?.type === FigureModule.Types.king) king = el;
+    if (el.figure?.type === Types.king) king = el;
   });
 
   return king as Position;
@@ -68,6 +68,21 @@ export function create(board: Position[][], colour: Colour): Player {
     king: kin,
     isChecked: check,
   };
+}
+
+export function operationBeforeMove(player: Player, opponent: Player, board: Position[][]): void {
+  // eslint-disable-next-line no-param-reassign
+  opponent.figures = findFigures(board, opponent.colour);
+  // eslint-disable-next-line no-param-reassign
+  opponent.king = findKing(opponent.figures);
+  // eslint-disable-next-line max-len,no-param-reassign
+  opponent.possibleMoves = handleAllPossibleMoves(opponent.figures, board, opponent.king, false);
+  // eslint-disable-next-line no-param-reassign
+  player.isChecked = isChecked(player.king);
+  if (player.figures && player.king) {
+    // eslint-disable-next-line max-len,no-param-reassign
+    player.possibleMoves = handleAllPossibleMoves(player.figures, board, player.king, true);
+  }
 }
 
 export default Player;

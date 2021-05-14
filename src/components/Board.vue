@@ -24,10 +24,8 @@
 import { defineComponent } from 'vue';
 import Position from '@/assets/interface/Position';
 import TemplateStartBoard from '@/assets/TemplateStartBoard';
-// eslint-disable-next-line import/no-named-as-default,import/no-named-as-default-member
 import Player, * as PlayerModule from '@/assets/interface/Player';
 import Colour from '@/assets/enums/Colour';
-import * as FigureModule from '@/assets/interface/Figure';
 import Area from './Area.vue';
 
 export default defineComponent({
@@ -39,9 +37,9 @@ export default defineComponent({
     return {
       board: [] as Position[][],
       active: null as (Position | null),
-      white: Object as Player,
-      black: Object as Player,
-      player: Object as Player,
+      white: {} as Player,
+      black: {} as Player,
+      player: {} as Player,
     };
   },
   methods: {
@@ -52,7 +50,7 @@ export default defineComponent({
       if (this.active === position) this.active = null;
       else this.active = position;
     },
-    move(positions: FigureModule.MoveFigure) {
+    move() {
       // change player
       if (this.player.colour === Colour.white) this.player = this.black;
       else this.player = this.white;
@@ -64,23 +62,12 @@ export default defineComponent({
           el.attackedBy = [];
         });
       });
-      this.white.figures = PlayerModule.findFigures(this.board, Colour.white);
-      this.black.figures = PlayerModule.findFigures(this.board, Colour.black);
-      this.white.king = PlayerModule.findKing(this.white.figures);
-      this.black.king = PlayerModule.findKing(this.black.figures);
+
       if (this.player === this.black) {
-        // eslint-disable-next-line max-len
-        this.white.possibleMoves = PlayerModule.handleAllPossibleMoves(this.white.figures, this.board, this.white.king, false);
-        // eslint-disable-next-line max-len
-        this.black.possibleMoves = PlayerModule.handleAllPossibleMoves(this.black.figures, this.board, this.black.king, true);
+        PlayerModule.operationBeforeMove(this.black, this.white, this.board);
       } else {
-        // eslint-disable-next-line max-len
-        this.black.possibleMoves = PlayerModule.handleAllPossibleMoves(this.black.figures, this.board, this.black.king, false);
-        // eslint-disable-next-line max-len
-        this.white.possibleMoves = PlayerModule.handleAllPossibleMoves(this.white.figures, this.board, this.white.king, true);
+        PlayerModule.operationBeforeMove(this.white, this.black, this.board);
       }
-      this.white.isChecked = PlayerModule.isChecked(this.white.king);
-      this.black.isChecked = PlayerModule.isChecked(this.black.king);
     },
   },
   created(): void {

@@ -1,4 +1,3 @@
-import Figure, * as FigureModule from '@/assets/interface/Figure';
 import King from '@/assets/Figure/King';
 import Bishop from '@/assets/Figure/Bishop';
 import Knight from '@/assets/Figure/Knight';
