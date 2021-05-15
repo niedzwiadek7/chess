@@ -10,7 +10,7 @@ export default function (oldPosition: Position, newPosition: Position,
   // eslint-disable-next-line no-param-reassign
   newPosition.figure = figure;
   // eslint-disable-next-line no-param-reassign
-  oldPosition.figure = figureOnNewPosition;
+  oldPosition.figure = undefined;
   const player: Player = {
     colour: figure.colour,
     figures: [newPosition],

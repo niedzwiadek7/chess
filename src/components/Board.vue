@@ -17,6 +17,8 @@
     <div class="groupFieldPerpendicularly">
       <div class="fieldDescription" v-for="n in 8" :key="n"> {{ n }} </div>
     </div>
+
+    <EndBox v-show="isEnd" :winner="player === white ? black : white" />
   </div>
 </template>
 
@@ -24,14 +26,17 @@
 import { defineComponent } from 'vue';
 import Position from '@/assets/interface/Position';
 import TemplateStartBoard from '@/assets/TemplateStartBoard';
-import Player, * as PlayerModule from '@/assets/interface/Player';
+import Player from '@/assets/interface/Player';
+import PlayerModule from '@/assets/class/PlayerModule';
 import Colour from '@/assets/enums/Colour';
+import EndBox from '@/components/EndBox.vue';
 import Area from './Area.vue';
 
 export default defineComponent({
   name: 'Board',
   components: {
     Area,
+    EndBox,
   },
   data() {
     return {
@@ -68,6 +73,11 @@ export default defineComponent({
       } else {
         PlayerModule.operationBeforeMove(this.white, this.black, this.board);
       }
+    },
+  },
+  computed: {
+    isEnd(): boolean {
+      return this.player.possibleMoves?.length === 0;
     },
   },
   created(): void {

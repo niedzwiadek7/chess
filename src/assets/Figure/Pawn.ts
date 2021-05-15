@@ -61,6 +61,10 @@ export default class Pawn implements Figure {
         || safeMoving(actualPosition, board[perpendicularly][horizontally], board, king, this)) {
         posMoves.push(board[perpendicularly][horizontally]);
       }
+      if (board[perpendicularly][horizontally].attackedBy
+        .findIndex((elem) => elem === actualPosition) === -1) {
+        board[perpendicularly][horizontally].attackedBy.push(actualPosition);
+      }
     }
   }
 
@@ -87,11 +91,6 @@ export default class Pawn implements Figure {
     }
 
     this.possibleMoving = possibleMoves;
-    this.possibleMoving.forEach((el) => {
-      if (el.attackedBy.findIndex((elem) => elem === actualPosition) === -1) {
-        el.attackedBy.push(actualPosition);
-      }
-    });
   }
 
   move(oldPosition: Position, newPosition: Position): void {
