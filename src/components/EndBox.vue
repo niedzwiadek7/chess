@@ -1,8 +1,7 @@
 <template>
   <div class="endBox">
     Koniec gry
-    <div v-if="isWhiteWinner()"> Wygrały białe </div>
-    <div v-else> Wygrały czarne </div>
+    <div> Wygrały {{ winner.winner.colour }} </div>
   </div>
 </template>
 
@@ -10,18 +9,14 @@
 import Colour from '@/assets/enums/Colour';
 import { defineComponent, PropType } from 'vue';
 import Player from '@/assets/interface/Player';
+import EndGame from '@/assets/interface/EndGame';
 
 export default defineComponent({
   name: 'EndBox',
   props: {
     winner: {
-      type: Object as PropType<Player>,
+      type: Object as PropType<EndGame>,
       required: true,
-    },
-  },
-  methods: {
-    isWhiteWinner(): boolean {
-      return this.winner.colour === Colour.white;
     },
   },
 });

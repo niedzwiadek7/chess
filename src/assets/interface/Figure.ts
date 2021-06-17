@@ -14,7 +14,7 @@ interface Figure {
   possibleMoves(board: Position[][], actualPosition: Position,
     checkingSecurity: boolean, king: Position): void,
   move(oldPosition: Position, newPosition: Position): RecordMove,
-  name: String
+  name: string
 }
 
 export default Figure;

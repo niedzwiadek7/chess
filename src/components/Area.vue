@@ -46,14 +46,11 @@ export default defineComponent({
       }
     },
     drop(e: any) {
-      console.log(this.active);
-      console.log(this.position);
-
       if (this.position.handlePosition?.classList.contains('possibleMove')) {
         // eslint-disable-next-line no-unused-expressions
         this.$emit('move', this.active?.figure?.move(this.active, this.position));
-        this.$emit('active', this.active);
       }
+      this.$emit('active', this.active);
     },
   },
   computed: {

@@ -1,6 +1,6 @@
 <template>
   <div class="board">
-    <PlayerComp name="Damian" />
+    <PlayerComp :player="white" @endTime = "endTime" />
     <div class="fieldPlay">
 
       <Area v-for="n in 64" :key="n"
@@ -21,11 +21,11 @@
         <div class="fieldDescription" v-for="n in 8" :key="n"> {{ n }} </div>
       </div>
     </div>
-    <PlayerComp name="Anna" />
+    <PlayerComp :player="black" @endTime = "endTime" />
 
     <SidePanel :moves="moves" />
 
-    <EndBox v-show="isEnd" :winner="player === white ? black : white" />
+    <EndBox v-if="isEnd" :winner="endGame" />
   </div>
 </template>
 
@@ -40,6 +40,7 @@ import EndBox from '@/components/EndBox.vue';
 import RecordMove from '@/assets/class/RecordMove';
 import SidePanel from '@/components/SidePanel.vue';
 import PlayerComp from '@/components/Player.vue';
+import EndGame from '@/assets/interface/EndGame';
 import Area from './Area.vue';
 
 export default defineComponent({
@@ -58,6 +59,7 @@ export default defineComponent({
       black: {} as Player,
       player: {} as Player,
       moves: [] as RecordMove[],
+      endGame: {} as EndGame,
     };
   },
   methods: {
@@ -70,6 +72,11 @@ export default defineComponent({
     },
     move(move: RecordMove) {
       this.moves.push(move);
+
+      // settings measure time
+      if (this.black.time) this.black.time.measure = !this.black.time.measure;
+      if (this.white.time) this.white.time.measure = !this.white.time.measure;
+
       // change player
       if (this.player.colour === Colour.white) this.player = this.black;
       else this.player = this.white;
@@ -88,10 +95,15 @@ export default defineComponent({
         PlayerModule.operationBeforeMove(this.white, this.black, this.board);
       }
     },
+    endTime() {
+      if (this.player.time) this.player.time.measure = false;
+      this.endGame.result = 'winner';
+      this.endGame.winner = this.player === this.white ? this.black : this.white;
+    },
   },
   computed: {
     isEnd(): boolean {
-      return this.player.possibleMoves?.length === 0;
+      return this.endGame.result !== undefined;
     },
   },
   created(): void {

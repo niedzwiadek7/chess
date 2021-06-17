@@ -56,11 +56,17 @@ class PlayerModule {
     const check: boolean = PlayerModule.isChecked(kin);
 
     return {
+      name: 'Damian',
       colour: col,
       figures: fig,
       possibleMoves: pos,
       king: kin,
       isChecked: check,
+      time: {
+        minutes: 0,
+        seconds: 10,
+        measure: col === Colour.white,
+      },
     };
   }
 
