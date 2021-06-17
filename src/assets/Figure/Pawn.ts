@@ -2,6 +2,7 @@ import Position from '@/assets/interface/Position';
 import Colour from '@/assets/enums/Colour';
 import safeMoving from '@/assets/Figure/Scripts/safeMoving';
 import Types from '@/assets/enums/Types';
+import RecordMove from '@/assets/class/RecordMove';
 import Figure from '../interface/Figure';
 
 export default class Pawn implements Figure {
@@ -21,6 +22,8 @@ export default class Pawn implements Figure {
 
   wrongColour: Colour;
 
+  name: string;
+
   constructor(colour: Colour) {
     this.type = Types.pawn;
     this.colour = colour;
@@ -29,6 +32,7 @@ export default class Pawn implements Figure {
     this.possibleMoving = [];
     if (this.colour === Colour.black) this.wrongColour = Colour.white;
     else this.wrongColour = Colour.black;
+    this.name = `${this.type}_${this.colour}`;
   }
 
   generatorPath(): string {
@@ -61,10 +65,12 @@ export default class Pawn implements Figure {
         || safeMoving(actualPosition, board[perpendicularly][horizontally], board, king, this)) {
         posMoves.push(board[perpendicularly][horizontally]);
       }
-      if (board[perpendicularly][horizontally].attackedBy
+    }
+
+    if (Pawn.includesInBoard(horizontally, perpendicularly)
+      && board[perpendicularly][horizontally].attackedBy
         .findIndex((elem) => elem === actualPosition) === -1) {
-        board[perpendicularly][horizontally].attackedBy.push(actualPosition);
-      }
+      board[perpendicularly][horizontally].attackedBy.push(actualPosition);
     }
   }
 
@@ -93,11 +99,13 @@ export default class Pawn implements Figure {
     this.possibleMoving = possibleMoves;
   }
 
-  move(oldPosition: Position, newPosition: Position): void {
+  move(oldPosition: Position, newPosition: Position): RecordMove {
+    const attackOpponent: boolean = newPosition.figure !== undefined;
     this.firstMove = false;
     // eslint-disable-next-line no-param-reassign
     oldPosition.figure = undefined;
     // eslint-disable-next-line no-param-reassign
     newPosition.figure = this;
+    return new RecordMove(oldPosition, newPosition, this, attackOpponent, 0);
   }
 }

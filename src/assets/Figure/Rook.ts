@@ -2,6 +2,7 @@ import Position from '@/assets/interface/Position';
 import Colour from '@/assets/enums/Colour';
 import possibleMoves from '@/assets/Figure/Scripts/MultiMoves';
 import Types from '@/assets/enums/Types';
+import RecordMove from '@/assets/class/RecordMove';
 import Figure from '../interface/Figure';
 
 export default class Rook implements Figure {
@@ -15,12 +16,15 @@ export default class Rook implements Figure {
 
   firstMove: boolean;
 
+  name: string;
+
   constructor(colour: Colour) {
     this.type = Types.rook;
     this.colour = colour;
     this.path = this.generatorPath();
     this.possibleMoving = [];
     this.firstMove = true;
+    this.name = `${this.type}_${this.colour}`;
   }
 
   generatorPath(): string {
@@ -39,11 +43,13 @@ export default class Rook implements Figure {
     });
   }
 
-  move(oldPosition: Position, newPosition: Position): void {
+  move(oldPosition: Position, newPosition: Position): RecordMove {
+    const attackOpponent: boolean = newPosition.figure !== undefined;
     this.firstMove = false;
     // eslint-disable-next-line no-param-reassign
     oldPosition.figure = undefined;
     // eslint-disable-next-line no-param-reassign
     newPosition.figure = this;
+    return new RecordMove(oldPosition, newPosition, this, attackOpponent, 0);
   }
 }

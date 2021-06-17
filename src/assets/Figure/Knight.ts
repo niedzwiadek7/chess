@@ -2,6 +2,7 @@ import Position from '@/assets/interface/Position';
 import Colour from '@/assets/enums/Colour';
 import possibleMoves from '@/assets/Figure/Scripts/SingleMove';
 import Types from '@/assets/enums/Types';
+import RecordMove from '@/assets/class/RecordMove';
 import Figure from '../interface/Figure';
 
 export default class Knight implements Figure {
@@ -15,6 +16,8 @@ export default class Knight implements Figure {
 
   wrongColour: Colour;
 
+  name: string;
+
   constructor(colour: Colour) {
     this.type = Types.knight;
     this.colour = colour;
@@ -22,6 +25,7 @@ export default class Knight implements Figure {
     this.possibleMoving = [];
     if (this.colour === Colour.white) this.wrongColour = Colour.black;
     else this.wrongColour = Colour.white;
+    this.name = `${this.type}_${this.colour}`;
   }
 
   generatorPath(): string {
@@ -42,10 +46,12 @@ export default class Knight implements Figure {
     });
   }
 
-  move(oldPosition: Position, newPosition: Position): void {
+  move(oldPosition: Position, newPosition: Position): RecordMove {
+    const attackOpponent: boolean = newPosition.figure !== undefined;
     // eslint-disable-next-line no-param-reassign
     oldPosition.figure = undefined;
     // eslint-disable-next-line no-param-reassign
     newPosition.figure = this;
+    return new RecordMove(oldPosition, newPosition, this, attackOpponent, 0);
   }
 }

@@ -3,6 +3,7 @@ import Colour from '@/assets/enums/Colour';
 import safeMoving from '@/assets/Figure/Scripts/safeMoving';
 import possibleMoves from '@/assets/Figure/Scripts/SingleMove';
 import Types from '@/assets/enums/Types';
+import RecordMove from '@/assets/class/RecordMove';
 import Figure from '../interface/Figure';
 
 export default class King implements Figure {
@@ -16,12 +17,15 @@ export default class King implements Figure {
 
   firstMove: boolean;
 
+  name: string;
+
   constructor(colour: Colour) {
     this.type = Types.king;
     this.colour = colour;
     this.path = this.generatorPath();
     this.possibleMoving = [];
     this.firstMove = true;
+    this.name = `${this.type}_${this.colour}`;
   }
 
   generatorPath(): string {
@@ -78,7 +82,9 @@ export default class King implements Figure {
     });
   }
 
-  move(oldPosition: Position, newPosition: Position): void {
+  move(oldPosition: Position, newPosition: Position): RecordMove {
+    let castle = 0;
+
     if (this.firstMove) {
       const length = oldPosition.horizontally.charCodeAt(0)
         - newPosition.horizontally.charCodeAt(0);
@@ -90,21 +96,26 @@ export default class King implements Figure {
           const newPos: (number | undefined) = rookPosition.figure?.possibleMoving.findIndex((elem) => elem.index === `F${newPosition.perpendicularly}`);
           // eslint-disable-next-line max-len,no-unused-expressions
           rookPosition.figure?.move(rookPosition, rookPosition?.figure?.possibleMoving[newPos || 0]);
+          castle = 1;
         } else {
           const rook: number = newPosition.attackedBy.findIndex((elem) => elem.index === `A${newPosition.perpendicularly}`);
           const rookPosition = newPosition.attackedBy[rook];
           const newPos: (number | undefined) = rookPosition.figure?.possibleMoving.findIndex((elem) => elem.index === `D${newPosition.perpendicularly}`);
           // eslint-disable-next-line max-len,no-unused-expressions
           rookPosition.figure?.move(rookPosition, rookPosition?.figure?.possibleMoving[newPos || 0]);
+          castle = 2;
         }
       }
     }
 
+    const attackOpponent: boolean = newPosition.figure !== undefined;
     // eslint-disable-next-line no-param-reassign
     oldPosition.figure = undefined;
     // eslint-disable-next-line no-param-reassign
     newPosition.figure = this;
 
     this.firstMove = false;
+
+    return new RecordMove(oldPosition, newPosition, this, attackOpponent, castle);
   }
 }

@@ -1,6 +1,8 @@
 <template>
   <div class="board">
+    <PlayerComp name="Damian" />
     <div class="fieldPlay">
+
       <Area v-for="n in 64" :key="n"
             :position="getPosition(n)"
             :active = "active"
@@ -8,15 +10,20 @@
             @active = "activated"
             @move = "move"
       />
-    </div>
 
-    <div class="groupFieldHorizontally">
-      <div class="fieldDescription" v-for="n in 8" :key="n"> {{ String.fromCharCode(64+n) }} </div>
-    </div>
+      <div class="groupFieldHorizontally">
+        <div class="fieldDescription" v-for="n in 8" :key="n">
+          {{ String.fromCharCode(64+n) }}
+        </div>
+      </div>
 
-    <div class="groupFieldPerpendicularly">
-      <div class="fieldDescription" v-for="n in 8" :key="n"> {{ n }} </div>
+      <div class="groupFieldPerpendicularly">
+        <div class="fieldDescription" v-for="n in 8" :key="n"> {{ n }} </div>
+      </div>
     </div>
+    <PlayerComp name="Anna" />
+
+    <SidePanel :moves="moves" />
 
     <EndBox v-show="isEnd" :winner="player === white ? black : white" />
   </div>
@@ -30,6 +37,9 @@ import Player from '@/assets/interface/Player';
 import PlayerModule from '@/assets/class/PlayerModule';
 import Colour from '@/assets/enums/Colour';
 import EndBox from '@/components/EndBox.vue';
+import RecordMove from '@/assets/class/RecordMove';
+import SidePanel from '@/components/SidePanel.vue';
+import PlayerComp from '@/components/Player.vue';
 import Area from './Area.vue';
 
 export default defineComponent({
@@ -37,6 +47,8 @@ export default defineComponent({
   components: {
     Area,
     EndBox,
+    SidePanel,
+    PlayerComp,
   },
   data() {
     return {
@@ -45,6 +57,7 @@ export default defineComponent({
       white: {} as Player,
       black: {} as Player,
       player: {} as Player,
+      moves: [] as RecordMove[],
     };
   },
   methods: {
@@ -55,7 +68,8 @@ export default defineComponent({
       if (this.active === position) this.active = null;
       else this.active = position;
     },
-    move() {
+    move(move: RecordMove) {
+      this.moves.push(move);
       // change player
       if (this.player.colour === Colour.white) this.player = this.black;
       else this.player = this.white;
@@ -101,18 +115,20 @@ export default defineComponent({
 
 .board {
   position: relative;
+  margin: 0;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  width: 70vh;
-  height: 70vh;
 
   .fieldPlay {
-    width: 88%;
-    height: 88%;
+    align-self: center;
+    position: relative;
+    width: 95vw;
+    height: 95vw;
     display: flex;
     flex-wrap: wrap;
     border: 2px solid black;
+    overflow: hidden;
   }
 
   .groupFieldHorizontally {
@@ -120,11 +136,14 @@ export default defineComponent({
     display: flex;
     flex-direction: row;
     align-items: center;
-    left: 6%;
-    top: 0;
-    width: 88%;
-    height: 6%;
+    bottom: 0;
+    right: -5%;
+    width: 100%;
     justify-content: space-around;
+
+    .fieldDescription:nth-child(2n+1) {
+        color: black;
+    }
   }
 
   .groupFieldPerpendicularly {
@@ -132,24 +151,31 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     align-items: center;
+    left: .5%;
+    top: -5%;
+    height: 100%;
     justify-content: space-around;
-    left: 0;
-    top: 6%;
-    width: 6%;
-    height: 88%;
+    overflow: hidden;
+
+    .fieldDescription:nth-child(2n) {
+      color: black;
+    }
   }
 
   .fieldDescription {
-    font-size: 12px;
+    font-size: .9rem;
     text-align: center;
     font-weight: bold;
+    color: white;
   }
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 768px) {
   .board {
-    width: 70vw;
-    height: 70vw;
+    .fieldPlay {
+      width: 75vw;
+      height: 75vw;
+    }
   }
 }
 </style>

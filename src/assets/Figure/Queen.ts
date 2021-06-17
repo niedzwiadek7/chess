@@ -2,6 +2,7 @@ import Position from '@/assets/interface/Position';
 import Colour from '@/assets/enums/Colour';
 import possibleMoves from '@/assets/Figure/Scripts/MultiMoves';
 import Types from '@/assets/enums/Types';
+import RecordMove from '@/assets/class/RecordMove';
 import Figure from '../interface/Figure';
 
 export default class Queen implements Figure {
@@ -13,11 +14,14 @@ export default class Queen implements Figure {
 
   possibleMoving: Position[];
 
+  name: string;
+
   constructor(colour: Colour) {
     this.type = Types.queen;
     this.colour = colour;
     this.path = this.generatorPath();
     this.possibleMoving = [];
+    this.name = `${this.type}_${this.colour}`;
   }
 
   generatorPath(): string {
@@ -37,10 +41,12 @@ export default class Queen implements Figure {
     });
   }
 
-  move(oldPosition: Position, newPosition: Position): void {
+  move(oldPosition: Position, newPosition: Position): RecordMove {
+    const attackOpponent: boolean = newPosition.figure !== undefined;
     // eslint-disable-next-line no-param-reassign
     oldPosition.figure = undefined;
     // eslint-disable-next-line no-param-reassign
     newPosition.figure = this;
+    return new RecordMove(oldPosition, newPosition, this, attackOpponent, 0);
   }
 }

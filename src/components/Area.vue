@@ -1,9 +1,10 @@
 <template>
-  <div class="area" :class="{ blankArea: isBlank }" @click="activated()" :id="position.index">
+  <div class="area" :class="{ blankArea: isBlank }" @click="activated()" :id="position.index"
+  @dragover.prevent @drop.prevent="drop">
     <div class="wrapper"
          :class="[{ active: callActivated }, { possibleMove: callMoving },
          { isCheck: isChecking }]">
-      <img v-show="position.figure !== undefined" :src="position.figure?.path" alt="" />
+         <Figure :figure="position.figure" :position="position.index" @choose="activated" />
     </div>
   </div>
 </template>
@@ -13,9 +14,11 @@ import { defineComponent, PropType } from 'vue';
 import Position from '@/assets/interface/Position';
 import Types from '@/assets/enums/Types';
 import Player from '@/assets/interface/Player';
+import Figure from '@/components/Figure.vue';
 
 export default defineComponent({
   name: 'Area',
+  components: { Figure },
   props: {
     position: {
       type: Object as PropType<Position>,
@@ -38,8 +41,17 @@ export default defineComponent({
         this.$emit('active', this.position);
       } else if (this.position.handlePosition?.classList.contains('possibleMove')) {
         // eslint-disable-next-line no-unused-expressions
-        this.active?.figure?.move(this.active, this.position);
-        this.$emit('move');
+        this.$emit('move', this.active?.figure?.move(this.active, this.position));
+        this.$emit('active', this.active);
+      }
+    },
+    drop(e: any) {
+      console.log(this.active);
+      console.log(this.position);
+
+      if (this.position.handlePosition?.classList.contains('possibleMove')) {
+        // eslint-disable-next-line no-unused-expressions
+        this.$emit('move', this.active?.figure?.move(this.active, this.position));
         this.$emit('active', this.active);
       }
     },
@@ -74,11 +86,6 @@ export default defineComponent({
   height: 12.5%;
   margin: 0;
   background: #630;
-
-  img {
-    width: 90%;
-    height: 90%;
-  }
 
   .wrapper {
     display: flex;

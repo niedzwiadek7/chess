@@ -2,7 +2,8 @@ import Position from '@/assets/interface/Position';
 import Colour from '@/assets/enums/Colour';
 import possibleMoves from '@/assets/Figure/Scripts/MultiMoves';
 import Types from '@/assets/enums/Types';
-import Figure from '../interface/Figure';
+import Figure from '@/assets/interface/Figure';
+import RecordMove from '../class/RecordMove';
 
 export default class Bishop implements Figure {
   type: Types;
@@ -13,11 +14,14 @@ export default class Bishop implements Figure {
 
   possibleMoving: Position[];
 
+  name: string;
+
   constructor(colour: Colour) {
     this.type = Types.bishop;
     this.colour = colour;
     this.path = this.generatorPath();
     this.possibleMoving = [];
+    this.name = `${this.type}_${this.colour}`;
   }
 
   generatorPath(): string {
@@ -36,10 +40,12 @@ export default class Bishop implements Figure {
     });
   }
 
-  move(oldPosition: Position, newPosition: Position): void {
+  move(oldPosition: Position, newPosition: Position): RecordMove {
+    const attackOpponent: boolean = newPosition.figure !== undefined;
     // eslint-disable-next-line no-param-reassign
     oldPosition.figure = undefined;
     // eslint-disable-next-line no-param-reassign
     newPosition.figure = this;
+    return new RecordMove(oldPosition, newPosition, this, attackOpponent, 0);
   }
 }

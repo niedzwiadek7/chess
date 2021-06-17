@@ -22,15 +22,23 @@ export default class App extends Vue {}
 </script>
 
 <style lang="scss">
+html {
+  font-size: 10px;
+}
+
 body {
   margin: 0;
-  background-image: url('./assets/images/wallpaper.png');
+  background-color: #333;
+  color: #ddd;
 }
 
 #app {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+  margin: 0;
+}
+
+@media (min-width: 600px) {
+  html {
+    font-size: 12px;
+  }
 }
 </style>
