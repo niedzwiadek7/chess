@@ -40,17 +40,12 @@ export default defineComponent({
       if (this.position.figure?.colour === this.player.colour) {
         this.$emit('active', this.position);
       } else if (this.position.handlePosition?.classList.contains('possibleMove')) {
-        // eslint-disable-next-line no-unused-expressions
-        this.$emit('move', this.active?.figure?.move(this.active, this.position));
+        this.$emit('move', this.active, this.position);
         this.$emit('active', this.active);
       }
     },
-    drop(e: any) {
-      if (this.position.handlePosition?.classList.contains('possibleMove')) {
-        // eslint-disable-next-line no-unused-expressions
-        this.$emit('move', this.active?.figure?.move(this.active, this.position));
-      }
-      this.$emit('active', this.active);
+    drop() {
+      this.activated();
     },
   },
   computed: {
@@ -66,8 +61,7 @@ export default defineComponent({
         && this.active?.figure?.possibleMoving.findIndex((el) => el === this.position) !== -1;
     },
     isChecking(): boolean {
-      return this.player.isChecked === true
-        && this.position.figure?.type === Types.king
+      return this.player.isChecked && this.position.figure?.type === Types.king
         && this.player.colour === this.position.figure?.colour
         && this.position !== this.active;
     },
@@ -76,7 +70,6 @@ export default defineComponent({
 
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .area {
   width: 12.5%;

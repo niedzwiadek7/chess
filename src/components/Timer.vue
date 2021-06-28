@@ -1,5 +1,5 @@
 <template>
-  <div class="timer">
+  <div :class="{'timer': true, 'active': timer.measure}">
     <span class="time">
       {{ timer.minutes }} : {{ styleSeconds(timer.seconds) }}
     </span>
@@ -57,7 +57,7 @@ export default defineComponent({
   border-radius: .5rem;
 
   .time {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
 
     &::before {
        content: '\f017';
@@ -65,5 +65,9 @@ export default defineComponent({
        margin-right: .7rem;
      }
   }
+}
+
+.active {
+  background-color: lighten(black, 35%);
 }
 </style>

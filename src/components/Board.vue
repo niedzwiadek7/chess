@@ -41,7 +41,8 @@ import RecordMove from '@/assets/class/RecordMove';
 import SidePanel from '@/components/SidePanel.vue';
 import PlayerComp from '@/components/Player.vue';
 import EndGame from '@/assets/interface/EndGame';
-import Area from './Area.vue';
+import Figure from '@/assets/interface/Figure';
+import Area from '@/components/Area.vue';
 
 export default defineComponent({
   name: 'Board',
@@ -70,8 +71,11 @@ export default defineComponent({
       if (this.active === position) this.active = null;
       else this.active = position;
     },
-    move(move: RecordMove) {
-      this.moves.push(move);
+    move(active: Position, position: Position) {
+      // eslint-disable-next-line no-unused-expressions
+      if (position.figure !== undefined) this.player.broken.push(position.figure);
+      const move = active.figure?.move(active, position);
+      if (move !== undefined) this.moves.push(move);
 
       // settings measure time
       if (this.black.time) this.black.time.measure = !this.black.time.measure;

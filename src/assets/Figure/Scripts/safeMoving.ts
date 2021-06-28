@@ -1,8 +1,7 @@
 import Types from '@/assets/enums/Types';
 import Colour from '@/assets/enums/Colour';
-import Position from '../../interface/Position';
-import Figure from '../../interface/Figure';
-import Player from '../../interface/Player';
+import Position from '@/assets/interface/Position';
+import Figure from '@/assets/interface/Figure';
 
 export default function (oldPosition: Position, newPosition: Position,
   board: Position[][], king: Position, figure: Figure): boolean {
@@ -11,20 +10,21 @@ export default function (oldPosition: Position, newPosition: Position,
   newPosition.figure = figure;
   // eslint-disable-next-line no-param-reassign
   oldPosition.figure = undefined;
-  const player: Player = {
+  const player = {
     colour: figure.colour,
     figures: [newPosition],
+    king,
   };
-  const opponent: Player = {
+  const opponent = {
     colour: player.colour === Colour.white ? Colour.black : Colour.white,
+    figures: [] as Position[],
+    possibleMoves: [] as Position[],
   };
 
   // handling king
-  player.king = king;
   if (figure.type === Types.king) player.king = newPosition;
 
   // handling dangerous figures
-  opponent.figures = [];
   // eslint-disable-next-line no-unused-expressions
   player.king.attackedBy.forEach((el) => {
     // eslint-disable-next-line no-unused-expressions
@@ -44,7 +44,6 @@ export default function (oldPosition: Position, newPosition: Position,
   });
 
   // check dangerous figures
-  opponent.possibleMoves = [];
   opponent.figures.forEach((el) => {
     // eslint-disable-next-line no-unused-expressions
     el.figure?.possibleMoves(board, el, false, king);

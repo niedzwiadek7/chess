@@ -2,6 +2,7 @@ import Position from '@/assets/interface/Position';
 import Colour from '@/assets/enums/Colour';
 import Types from '@/assets/enums/Types';
 import Player from '@/assets/interface/Player';
+import Figure from '@/assets/interface/Figure';
 
 class PlayerModule {
   static findFigures(board: Position[][], colour: Colour): Position[] {
@@ -63,10 +64,11 @@ class PlayerModule {
       king: kin,
       isChecked: check,
       time: {
-        minutes: 0,
-        seconds: 10,
+        minutes: 10,
+        seconds: 0,
         measure: col === Colour.white,
       },
+      broken: [] as Figure[],
     };
   }
 
