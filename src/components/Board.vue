@@ -39,9 +39,8 @@ import Colour from '@/assets/enums/Colour';
 import EndBox from '@/components/EndBox.vue';
 import RecordMove from '@/assets/class/RecordMove';
 import SidePanel from '@/components/SidePanel.vue';
-import PlayerComp from '@/components/Player.vue';
+import PlayerComp from '@/components/Player/Player.vue';
 import EndGame from '@/assets/interface/EndGame';
-import Figure from '@/assets/interface/Figure';
 import Area from '@/components/Area.vue';
 
 export default defineComponent({

@@ -14,9 +14,9 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import Colour from '@/assets/enums/Colour';
-import Timer from '@/components/Timer.vue';
+import Timer from '@/components/Player/Timer.vue';
 import Player from '@/assets/interface/Player';
-import BrokenFigures from '@/components/BrokenFigures.vue';
+import BrokenFigures from '@/components/Player/BrokenFigures.vue';
 
 export default defineComponent({
   name: 'Player',

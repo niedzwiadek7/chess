@@ -1,24 +1,24 @@
 <template>
   <div class="brokenFigures">
-    <span class="wrapper" :style="`max-width: ${15+(figureCount('pawn')*7)}px`">
+    <span class="wrapper" :style="`max-width: ${15+((figureCount('pawn') -1) * 7)}px`">
       <img v-for="n in figureCount('pawn')" :key="n"
-           class="figure" :src="pawn.path" :style="`left: ${-8*(n-1)}px`">
+           class="figure" :src="pawn.path" :style="`transform: translateX(${-55*(n-1)}%)`">
     </span>
-    <span class="wrapper">
+    <span class="wrapper" :style="`max-width: ${15+((figureCount('knight') -1) * 7)}px`">
       <img v-for="n in figureCount('knight')" :key="n"
-           class="figure" :src="knight.path" :style="`left: ${-8*(n-1)}px`">
+           class="figure" :src="knight.path" :style="`transform: translateX(${-8*(n-1)}px)`">
     </span>
-    <span class="wrapper">
+    <span class="wrapper" :style="`max-width: ${15+((figureCount('bishop') -1) * 7)}px`">
       <img v-for="n in figureCount('bishop')" :key="n"
-           class="figure" :src="bishop.path" :style="`left: ${-8*(n-1)}px`">
+           class="figure" :src="bishop.path" :style="`transform: translateX(${-8*(n-1)}px)`">
     </span>
-    <span class="wrapper">
+    <span class="wrapper" :style="`max-width: ${15+((figureCount('rook') -1) * 7)}px`">
       <img v-for="n in figureCount('rook')" :key="n"
-           class="figure" :src="rook.path" :style="`left: ${-8*(n-1)}px`">
+           class="figure" :src="rook.path" :style="`transform: translateX(${-8*(n-1)}px)`">
     </span>
-    <span class="wrapper">
+    <span class="wrapper" :style="`max-width: ${15+((figureCount('queen') -1) * 7)}px`">
       <img v-for="n in figureCount('queen')" :key="n"
-           class="figure" :src="queen.path" :style="`left: ${-8*(n-1)}px`">
+           class="figure" :src="queen.path" :style="`transform: translateX(${-8*(n-1)}px)`">
     </span>
   </div>
 </template>
@@ -70,12 +70,15 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .brokenFigures {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  margin-top: 2px;
   // position: relative;
   .wrapper {
-    position: relative;
-    left: 10px;
+    display: flex;
+    flex-direction: row;
     img {
-      position: absolute;
       display: inline-block;
       width: 15px;
       height: 15px;
