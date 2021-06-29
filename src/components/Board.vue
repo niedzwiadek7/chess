@@ -42,6 +42,7 @@ import SidePanel from '@/components/SidePanel.vue';
 import PlayerComp from '@/components/Player/Player.vue';
 import EndGame from '@/assets/interface/EndGame';
 import Area from '@/components/Area.vue';
+import Time from '@/assets/interface/Time';
 
 export default defineComponent({
   name: 'Board',
@@ -60,6 +61,7 @@ export default defineComponent({
       player: {} as Player,
       moves: [] as RecordMove[],
       endGame: {} as EndGame,
+      timeMove: {} as Time,
     };
   },
   methods: {
@@ -76,6 +78,11 @@ export default defineComponent({
       const move = active.figure?.move(active, position);
       if (move !== undefined) this.moves.push(move);
 
+      // moving time
+      // eslint-disable-next-line max-len
+      this.moves[this.moves.length - 1].time = (this.timeMove.minutes - this.player.time.minutes) * 60
+        + (this.timeMove.seconds - this.player.time.seconds);
+
       // settings measure time
       if (this.black.time) this.black.time.measure = !this.black.time.measure;
       if (this.white.time) this.white.time.measure = !this.white.time.measure;
@@ -83,6 +90,7 @@ export default defineComponent({
       // change player
       if (this.player.colour === Colour.white) this.player = this.black;
       else this.player = this.white;
+      this.timeMove = { ...this.player.time };
 
       // update information about players
       this.board.forEach((elem) => {
@@ -114,6 +122,7 @@ export default defineComponent({
     this.black = PlayerModule.create(this.board, Colour.black);
     this.white = PlayerModule.create(this.board, Colour.white);
     this.player = this.white;
+    this.timeMove = { ...this.player.time };
   },
   mounted(): void {
     this.board.forEach((el) => {

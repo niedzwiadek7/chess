@@ -30,27 +30,26 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .move {
-  display: flex;
-  align-items: center;
-  padding: .2rem .5rem;
-  position: absolute;
-  top: -1.6rem;
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
   user-select: none;
+  margin: .3rem .5rem;
+  padding: .3rem .5rem;
+  width: max-content;
+  transition: all .2s ease-in-out;
 
   img {
-    width: 2rem;
-    height: 2rem;
-    margin-right: 1rem;
-  }
-
-  .value {
-    font-size: 1.3rem;
+    width: 1.7rem;
+    height: 1.7rem;
+    margin-right: .2rem;
   }
 
   &:hover {
-    background-color: #444;
+    background-color: rgba(#000, .3);
+    color: white;
     cursor: pointer;
-    border-radius: 3px;
+    border-radius: 2px;
   }
 }
 </style>

@@ -69,5 +69,6 @@ export default defineComponent({
 
 .active {
   background-color: lighten(black, 35%);
+  transition: all .3s ease-in-out;
 }
 </style>

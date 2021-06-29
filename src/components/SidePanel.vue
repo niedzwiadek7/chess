@@ -2,18 +2,7 @@
   <div class="sidebar">
     <div class="moveArray">
       <h3> Moves list </h3>
-      <ol class="list">
-        <li v-for="n in Math.floor((moves.length+1)/2)" :key="n" class="queue">
-          <ul class="queueList">
-            <li :key="2*(n-1)" class="element">
-              <Move :move="getMove(2*(n-1))" />
-            </li>
-            <li :key="2*(n-1)+1" class="element">
-              <Move v-show="getMove(2*(n-1)+1) !== undefined" :move="getMove(2*(n-1)+1)" />
-            </li>
-          </ul>
-        </li>
-      </ol>
+      <MovesArray :moves="moves" />
     </div>
     <div class="options">
       <div class="option">
@@ -29,24 +18,32 @@
         <i class="fas fa-forward"></i>
       </div>
     </div>
+    <div class="game-options">
+      <span class="surrender">
+        <i class="fas fa-flag"> </i> Poddaj się
+      </span>
+      <span class="draw">
+        <i class="fas fa-handshake"></i> Remis
+      </span>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import RecordMove from '@/assets/class/RecordMove';
-import Move from '@/components/Move.vue';
+import MovesArray from '@/components/MovesArray.vue';
 
 export default defineComponent({
   name: 'SidePanel',
   props: {
     moves: {
-      type: Object as PropType<RecordMove[]>,
+      type: [] as PropType<RecordMove[]>,
       required: true,
     },
   },
   components: {
-    Move,
+    MovesArray,
   },
   methods: {
     getMove(n: number): RecordMove {
@@ -58,40 +55,20 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   .sidebar {
+    position: relative;
     width: 100%;
     background-color: #222;
     margin-bottom: 50px;
+    min-height: 200px;
 
     .moveArray {
-      margin: 5%;
-      width: 90%;
-      font-size: 1.4rem;
-
-       .list {
-        list-style-position: inside;
-
-        .queue {
-          padding-left: 1rem;
-          padding-top: .7rem;
-          padding-bottom: .7rem;
-
-          .queueList {
-            display: inline-flex;
-            justify-content: space-around;
-            padding-left: 0;
-            align-items: center;
-            width: 70%;
-            list-style: none;
-            position: relative;
-          }
-
-          &:nth-child(2n) {
-            background-color: #333;
-          }
-        }
-      }
+      margin: 5% 5% 40px 0;
+      width: 100%;
+      font-size: 1.1rem;
 
       h3 {
+        user-select: none;
+        margin-left: 20px;
         font-weight: normal;
       }
     }
@@ -106,10 +83,37 @@ export default defineComponent({
       justify-content: space-around;
       align-items: center;
       padding: 0 5%;
+      z-index: 5;
 
       .option {
         cursor: pointer;
         font-size: 2rem;
+      }
+    }
+
+    .game-options {
+      position: absolute;
+      left: 20px;
+      bottom: 15px;
+      font-size: 1.1rem;
+
+      .surrender {
+        margin-right: 10px;
+        i {
+          transform: rotate(-25deg);
+        }
+      }
+
+      .surrender, .draw {
+        transition: all .2s ease-in-out;
+        padding: .6rem;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 1;
+
+        &:hover {
+          background-color: rgba(#000, .3);
+        }
       }
     }
   }

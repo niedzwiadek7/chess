@@ -18,6 +18,8 @@ class RecordMove implements Move {
 
   castle: number;
 
+  time: (number | undefined);
+
   constructor(oldPosition: Position, newPosition: Position, figure: Figure,
     attack: boolean, isCastle: number) {
     this.oldPosition = oldPosition;
