@@ -1,7 +1,7 @@
 <template>
   <img class="figure" v-show="figure !== undefined" :src="figure?.path" alt=""
        :id="`${figure?.name}_${position}`"
-       :draggable="draggable" @dragstart="dragStart" @dragover.stop />
+       :draggable="draggable" @dragstart="dragStart" />
 </template>
 
 <script lang="ts">
@@ -30,6 +30,8 @@ export default defineComponent({
   methods: {
     dragStart(e: any) {
       if (this.figure !== undefined) {
+        e.dataTransfer.dropEffect = 'move';
+        e.dataTransfer.effectAllowed = 'move';
         this.$emit('choose');
       }
     },
@@ -39,7 +41,18 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   img {
+    transition: all 1s;
+    display: inline-block;
     width: 90%;
     height: 90%;
+    user-select: none;
+  }
+
+  .fade-leave-active {
+    transition: all 2s ease-in-out;
+  }
+
+  .fade-leave-to {
+    opacity: 0;
   }
 </style>

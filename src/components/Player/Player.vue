@@ -70,10 +70,44 @@ export default defineComponent({
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .wrapper {
-    width: 75%;
-    margin: 2rem auto;
+    height: 40px;
+
+    .player {
+      .photo {
+        width: 40px;
+        height: 40px;
+      }
+
+      .name {
+        font-size: 1.4rem;
+      }
+    }
   }
 }
+
+@media (min-width: 1024px) {
+  .wrapper {
+    margin: 0;
+    width: 100%;
+  }
+}
+
+@media (min-width: 1440px) {
+  .wrapper {
+    .player {
+      .photo {
+        width: 50px;
+        height: 50px;
+        margin-right: 1.2rem;
+      }
+
+      .name {
+        font-size: 1.7rem;
+      }
+    }
+  }
+}
+
 </style>

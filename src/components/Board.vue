@@ -1,29 +1,26 @@
 <template>
-  <div class="board">
-    <PlayerComp :player="white" @endTime = "endTime" />
-    <div class="fieldPlay">
+  <div class="boardWrapper">
+    <div class="board">
+      <PlayerComp :player="white" @endTime = "endTime" />
+      <div class="fieldPlay">
+          <transition-group name="list">
+            <Area v-for="n in 64" :key="board[Math.floor(n / 8)[n % 8]]"
+                  :position="getPosition(n)"
+                  :active = "active"
+                  :player = "player"
+                  @active = "activated"
+                  @move = "move"
+            />
+          </transition-group>
 
-      <Area v-for="n in 64" :key="n"
-            :position="getPosition(n)"
-            :active = "active"
-            :player = "player"
-            @active = "activated"
-            @move = "move"
-      />
+        <GroupFieldPerpendicularly />
+        <GroupFieldHorizontally />
 
-      <div class="groupFieldHorizontally">
-        <div class="fieldDescription" v-for="n in 8" :key="n">
-          {{ String.fromCharCode(64+n) }}
-        </div>
       </div>
-
-      <div class="groupFieldPerpendicularly">
-        <div class="fieldDescription" v-for="n in 8" :key="n"> {{ n }} </div>
-      </div>
+      <PlayerComp :player="black" @endTime = "endTime" />
     </div>
-    <PlayerComp :player="black" @endTime = "endTime" />
 
-    <SidePanel :moves="moves" />
+    <SidePanel :moves="moves" class="side-panel" />
 
     <EndBox v-if="isEnd" :winner="endGame" />
   </div>
@@ -33,15 +30,17 @@
 import { defineComponent } from 'vue';
 import Position from '@/assets/interface/Position';
 import TemplateStartBoard from '@/assets/TemplateStartBoard';
+import GroupFieldPerpendicularly from '@/components/Board/GroupFieldPerpendicularly.vue';
+import GroupFieldHorizontally from '@/components/Board/GroupFieldHorizontally.vue';
 import Player from '@/assets/interface/Player';
 import PlayerModule from '@/assets/class/PlayerModule';
 import Colour from '@/assets/enums/Colour';
 import EndBox from '@/components/EndBox.vue';
 import RecordMove from '@/assets/class/RecordMove';
-import SidePanel from '@/components/SidePanel.vue';
+import SidePanel from '@/components/SidePanel/SidePanel.vue';
 import PlayerComp from '@/components/Player/Player.vue';
 import EndGame from '@/assets/interface/EndGame';
-import Area from '@/components/Area.vue';
+import Area from '@/components/Board/Area.vue';
 import Time from '@/assets/interface/Time';
 
 export default defineComponent({
@@ -51,6 +50,8 @@ export default defineComponent({
     EndBox,
     SidePanel,
     PlayerComp,
+    GroupFieldPerpendicularly,
+    GroupFieldHorizontally,
   },
   data() {
     return {
@@ -137,68 +138,83 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 
-.board {
+.list-enter-from, .list-leave-to {
+  opacity: 0;
+}
+.list-leave-active {
+  position: absolute;
+}
+
+.list-move {
+  transition: all 1s ease-in-out;
+}
+
+.boardWrapper {
   position: relative;
   margin: 0;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-start;
 
-  .fieldPlay {
-    align-self: center;
-    position: relative;
-    width: 95vw;
-    height: 95vw;
-    display: flex;
-    flex-wrap: wrap;
-    border: 2px solid black;
-    overflow: hidden;
-  }
-
-  .groupFieldHorizontally {
-    position: absolute;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    bottom: 0;
-    right: -5%;
-    width: 100%;
-    justify-content: space-around;
-
-    .fieldDescription:nth-child(2n+1) {
-        color: black;
-    }
-  }
-
-  .groupFieldPerpendicularly {
-    position: absolute;
+  .board {
     display: flex;
     flex-direction: column;
     align-items: center;
-    left: .5%;
-    top: -5%;
-    height: 100%;
-    justify-content: space-around;
-    overflow: hidden;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    width: 100%;
 
-    .fieldDescription:nth-child(2n) {
-      color: black;
+    .fieldPlay {
+      position: relative;
+      width: 95vw;
+      height: 95vw;
+      display: flex;
+      flex-wrap: wrap;
+      border: 2px solid black;
+      overflow: hidden;
     }
-  }
-
-  .fieldDescription {
-    font-size: .9rem;
-    text-align: center;
-    font-weight: bold;
-    color: white;
   }
 }
 
-@media (min-width: 768px) {
-  .board {
-    .fieldPlay {
-      width: 75vw;
-      height: 75vw;
+@media (min-width: 450px) {
+  .boardWrapper {
+    .board {
+      .fieldPlay {
+        width: 85vw;
+        height: 85vw;
+      }
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .boardWrapper {
+    flex-direction: row;
+    gap: 2vw;
+    justify-content: space-between;
+    width: 100vw;
+    height: 100vh;
+
+    .board {
+      justify-content: space-evenly;
+      box-sizing: border-box;
+      width: 90vh;
+      height: 100vh;
+      padding-left: 2vw;
+      margin-left: auto;
+      margin-right: auto;
+
+      .fieldPlay {
+        width: 80vh;
+        height: 80vh;
+      }
+    }
+
+    .side-panel {
+      width: 30vw;
+      justify-self: end;
     }
   }
 }

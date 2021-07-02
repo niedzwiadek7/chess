@@ -38,6 +38,7 @@ export default defineComponent({
   padding: .3rem .5rem;
   width: max-content;
   transition: all .2s ease-in-out;
+  font-weight: bold;
 
   img {
     width: 1.7rem;

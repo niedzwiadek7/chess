@@ -3,7 +3,7 @@
   @dragover.prevent @drop.prevent="drop">
     <div class="wrapper"
          :class="[{ active: callActivated }, { possibleMove: callMoving },
-         { isCheck: isChecking }]">
+         { isCheck: isChecking }, { possibleAttack: callMoving && position.figure }]">
          <Figure :figure="position.figure" :position="position.index" @choose="activated" />
     </div>
   </div>
@@ -14,7 +14,7 @@ import { defineComponent, PropType } from 'vue';
 import Position from '@/assets/interface/Position';
 import Types from '@/assets/enums/Types';
 import Player from '@/assets/interface/Player';
-import Figure from '@/components/Figure.vue';
+import Figure from '@/components/Board/Figure.vue';
 
 export default defineComponent({
   name: 'Area',
@@ -42,9 +42,11 @@ export default defineComponent({
       } else if (this.position.handlePosition?.classList.contains('possibleMove')) {
         this.$emit('move', this.active, this.position);
         this.$emit('active', this.active);
+      } else if (this.active !== null) {
+        this.$emit('active', this.active);
       }
     },
-    drop() {
+    drop(e: any) {
       this.activated();
     },
   },
@@ -78,6 +80,7 @@ export default defineComponent({
   background: #630;
 
   .wrapper {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -90,7 +93,27 @@ export default defineComponent({
   }
 
   .possibleMove {
-    background-color: rgba(0, 255, 0, 0.15);
+    &::after {
+      content: '';
+      display: block;
+      width: 32%;
+      height: 32%;
+      background-color: rgba(#000, .25);
+      border-radius: 50%;
+    }
+  }
+
+  .possibleAttack {
+    &::after {
+      content: '';
+      box-sizing: border-box;
+      position: absolute;
+      display: block;
+      width: 100%;
+      height: 100%;
+      background-color: unset;
+      border: 3px solid rgba(#000, .5);
+    }
   }
 
   .isCheck {
@@ -100,5 +123,35 @@ export default defineComponent({
 
 .blankArea {
   background: #fc6;
+}
+
+@media (min-width: 450px) {
+  .area {
+    .possibleAttack {
+      &::after {
+        border: 4px solid rgba(#000, .5);
+      }
+    }
+  }
+}
+
+@media (min-width: 600px) {
+  .area {
+    .possibleAttack {
+      &::after {
+        border: 5px solid rgba(#000, .5);
+      }
+    }
+  }
+}
+
+@media (min-width: 1440px) {
+  .area {
+    .possibleAttack {
+      &::after {
+        border: 6px solid rgba(#000, .5);
+      }
+    }
+  }
 }
 </style>

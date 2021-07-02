@@ -1,5 +1,6 @@
 <template>
   <div :class="{'timer': true, 'active': timer.measure}">
+    <i class="clock fas fa-stopwatch"></i>
     <span class="time">
       {{ timer.minutes }} : {{ styleSeconds(timer.seconds) }}
     </span>
@@ -51,24 +52,55 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .timer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background-color: black;
-  margin: 1rem;
-  padding: .65rem 1.5rem;
+  margin: 1rem 0 1rem 1rem;
+  padding: .8rem 1.5rem;
   border-radius: .5rem;
+  min-width: 65px;
 
   .time {
     font-size: 1.25rem;
-
-    &::before {
-       content: '\f017';
-       font-family: FontAwesome;
-       margin-right: .7rem;
-     }
   }
 }
 
 .active {
-  background-color: lighten(black, 35%);
+  background-color: rgba(black, .4);
   transition: all .3s ease-in-out;
+}
+
+@media (min-width: 600px) {
+  .timer {
+    padding: 1rem 1.8rem;
+    min-width: 90px;
+    .time {
+      font-size: 1.5rem;
+    }
+    .clock {
+      font-size: 1.7rem;
+    }
+  }
+}
+
+@media (min-width: 1366px) {
+  .timer {
+    padding: 1.2rem 2.7rem;
+    .time {
+      font-size: 1.6rem;
+    }
+  }
+}
+
+@media(min-width: 1440px) {
+  .timer {
+    min-width: 110px;
+    padding: 1.4rem 3rem;
+
+    .time {
+      font-size: 1.8rem;
+    }
+  }
 }
 </style>

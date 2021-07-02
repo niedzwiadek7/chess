@@ -64,7 +64,7 @@ class PlayerModule {
       king: kin,
       isChecked: check,
       time: {
-        minutes: 10,
+        minutes: 30,
         seconds: 0,
         measure: col === Colour.white,
       },

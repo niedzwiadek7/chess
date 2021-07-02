@@ -1,24 +1,29 @@
 <template>
   <div class="brokenFigures">
-    <span class="wrapper" :style="`max-width: ${15+((figureCount('pawn') -1) * 7)}px`">
-      <img v-for="n in figureCount('pawn')" :key="n"
+    <span class="wrapper" v-if="figureCount('pawn') > 0 || true"
+      :style="`max-width: ${imgWidth+((figureCount('pawn') -1) * (imgWidth / 2))}px`">
+      <img v-for="n in figureCount('pawn')" :key="n" ref="img"
            class="figure" :src="pawn.path" :style="`transform: translateX(${-55*(n-1)}%)`">
     </span>
-    <span class="wrapper" :style="`max-width: ${15+((figureCount('knight') -1) * 7)}px`">
+    <span class="wrapper" v-if="figureCount('knight') > 0 || true"
+          :style="`max-width: ${imgWidth+((figureCount('knight') -1) * (imgWidth / 2))}px`">
       <img v-for="n in figureCount('knight')" :key="n"
-           class="figure" :src="knight.path" :style="`transform: translateX(${-8*(n-1)}px)`">
+           class="figure" :src="knight.path" :style="`transform: translateX(${-55*(n-1)}}%)`">
     </span>
-    <span class="wrapper" :style="`max-width: ${15+((figureCount('bishop') -1) * 7)}px`">
+    <span class="wrapper" v-if="figureCount('bishop') > 0 || true"
+          :style="`max-width: ${imgWidth+((figureCount('bishop') -1) * (imgWidth / 2))}px`">
       <img v-for="n in figureCount('bishop')" :key="n"
-           class="figure" :src="bishop.path" :style="`transform: translateX(${-8*(n-1)}px)`">
+           class="figure" :src="bishop.path" :style="`transform: translateX(${-55*(n-1)}%)`">
     </span>
-    <span class="wrapper" :style="`max-width: ${15+((figureCount('rook') -1) * 7)}px`">
+    <span class="wrapper" v-if="figureCount('rook') > 0 || true"
+          :style="`max-width: ${imgWidth+((figureCount('rook') -1) * (imgWidth / 2))}px`">
       <img v-for="n in figureCount('rook')" :key="n"
-           class="figure" :src="rook.path" :style="`transform: translateX(${-8*(n-1)}px)`">
+           class="figure" :src="rook.path" :style="`transform: translateX(${-55*(n-1)}%)`">
     </span>
-    <span class="wrapper" :style="`max-width: ${15+((figureCount('queen') -1) * 7)}px`">
+    <span class="wrapper" v-if="figureCount('queen') > 0 || true"
+          :style="`max-width: ${imgWidth+((figureCount('queen') -1) * (imgWidth / 2))}px`">
       <img v-for="n in figureCount('queen')" :key="n"
-           class="figure" :src="queen.path" :style="`transform: translateX(${-8*(n-1)}px)`">
+           class="figure" :src="queen.path" :style="`transform: translateX(${-55*(n-1)}%)`">
     </span>
   </div>
 </template>
@@ -53,6 +58,7 @@ export default defineComponent({
       bishop: new Bishop(this.colour),
       rook: new Rook(this.colour),
       queen: new Queen(this.colour),
+      imgWidth: 0 as number,
     };
   },
   methods: {
@@ -65,6 +71,12 @@ export default defineComponent({
       return count;
     },
   },
+  mounted() {
+    window.onresize = () => {
+      const img: (HTMLImageElement | undefined) = (this.$refs.im as (HTMLImageElement | undefined));
+      if (img !== undefined) this.imgWidth = img.clientWidth;
+    };
+  },
 });
 </script>
 
@@ -74,7 +86,8 @@ export default defineComponent({
   flex-direction: row;
   flex-wrap: nowrap;
   margin-top: 2px;
-  // position: relative;
+  max-width: max-content;
+
   .wrapper {
     display: flex;
     flex-direction: row;
@@ -82,6 +95,18 @@ export default defineComponent({
       display: inline-block;
       width: 15px;
       height: 15px;
+    }
+  }
+}
+
+@media (min-width: 600px) {
+  .brokenFigures {
+    .wrapper {
+      padding-right: 5px;
+      img {
+        width: 20px;
+        height: 20px;
+      }
     }
   }
 }

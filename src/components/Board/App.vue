@@ -4,8 +4,8 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import Area from './components/Area.vue';
-import Board from './components/Board.vue';
+import Area from './Area.vue';
+import Board from '../Board.vue';
 
 @Options({
   data() {
@@ -34,11 +34,5 @@ body {
 
 #app {
   margin: 0;
-}
-
-@media (min-width: 600px) {
-  html {
-    font-size: 12px;
-  }
 }
 </style>

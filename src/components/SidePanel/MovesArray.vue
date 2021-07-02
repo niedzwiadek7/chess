@@ -1,5 +1,5 @@
 <template>
-  <div v-if="moves.length > 0" class="list">
+  <div class="list" ref="list">
     <div v-for="n in Math.floor((moves.length+1)/2)" :key="n" class="queue">
       <div class="number"> {{ n }}. </div>
 
@@ -24,8 +24,8 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import RecordMove from '@/assets/class/RecordMove';
-import Move from '@/components/Move.vue';
-import TimeComponent from '@/components/TimeComponent.vue';
+import Move from '@/components/SidePanel/Move.vue';
+import TimeComponent from '@/components/SidePanel/TimeComponent.vue';
 
 export default defineComponent({
   name: 'MovesArray',
@@ -43,16 +43,26 @@ export default defineComponent({
     getMove(n: number): RecordMove {
       return this.moves[n];
     },
+    scrollToEnd() {
+      const content: HTMLDivElement = (this.$refs.list as HTMLDivElement);
+      content.scrollTop = content.scrollHeight;
+    },
+  },
+  updated() {
+    this.scrollToEnd();
   },
 });
 </script>
 
 <style lang="scss" scoped>
 .list {
+  max-height: 300px;
+  overflow: auto;
+  width: 100%;
+  margin: auto;
 
   .queue {
     box-sizing: border-box;
-    width: 100%;
     height: 3rem;
     display: grid;
     align-items: center;
@@ -67,14 +77,9 @@ export default defineComponent({
       background-color: #333;
       height: 100%;
       border-right: 1px solid black;
-      border-top: 1px solid black;
       text-align: center;
       grid-area: number;
       user-select: none;
-
-      &:first-child {
-        border-top: 1px solid black;
-      }
     }
 
     .element {
@@ -103,6 +108,29 @@ export default defineComponent({
 
   &:last-child {
     border-top: 1px solid black;
+  }
+}
+
+@media (min-width: 600px) {
+  .list {
+    width: 90%;
+
+    .queue {
+      border-left: 1px solid #000;
+      border-right: 1px solid #000;
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .list {
+    width: 100%;
+    max-height: 85vh;
+
+    .queue {
+      border-left: 0;
+      border-right: 0;
+    }
   }
 }
 </style>
