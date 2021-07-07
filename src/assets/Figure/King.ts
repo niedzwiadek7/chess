@@ -41,7 +41,8 @@ export default class King implements Figure {
       if (board[perpendicularly][horizontally - 1].figure === undefined
       && board[perpendicularly][horizontally].figure === undefined
       && board[perpendicularly][horizontally + 1].figure?.firstMove
-      && board[perpendicularly][horizontally - 2].attackedBy.length === 0) {
+      && board[perpendicularly][horizontally - 2].attackedBy
+        .filter((pos) => pos.figure?.colour !== this.colour).length === 0) {
         if (checkingSecurity
           && safeMoving(actualPosition, board[perpendicularly][horizontally], board, king, this)) {
           posMoves.push(board[perpendicularly][horizontally]);
@@ -51,7 +52,8 @@ export default class King implements Figure {
         && board[perpendicularly][horizontally].figure === undefined
         && board[perpendicularly][horizontally - 1].figure === undefined
         && this.firstMove && board[perpendicularly][horizontally - 2].figure?.firstMove
-        && board[perpendicularly][horizontally - 2].attackedBy.length === 0) {
+        && board[perpendicularly][horizontally - 2].attackedBy
+          .filter((pos) => pos.figure?.colour !== this.colour).length === 0) {
       if (checkingSecurity
           && safeMoving(actualPosition, board[perpendicularly][horizontally], board, king, this)) {
         posMoves.push(board[perpendicularly][horizontally]);

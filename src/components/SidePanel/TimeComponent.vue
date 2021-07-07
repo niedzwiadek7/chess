@@ -1,8 +1,13 @@
 <template>
   <div class="wrapper">
     <div class="bar">
-      <div class="time"> {{ generateTime }} </div>
-      <div class="status" :style="`width: ${time / 6}%`"></div>
+      <div class="time">
+        {{ generateTime }}
+      </div>
+      <div
+        class="status"
+        :style="`width: ${time || 0 / 6}%`"
+      />
     </div>
   </div>
 </template>

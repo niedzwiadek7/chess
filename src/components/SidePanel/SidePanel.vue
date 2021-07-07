@@ -6,28 +6,28 @@
     </div>
     <div class="options">
       <div class="new-game option">
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-plus" />
         <span class="new"> Rozpocznij nową grę </span>
       </div>
       <div class="statistics option">
-        <i class="fas fa-chart-area"></i>
+        <i class="fas fa-chart-area" />
         <span class="stat"> Ta funkcja jest obecnie niedostępna </span>
       </div>
       <div class="previous-move option">
-        <i class="fas fa-backward"></i>
+        <i class="fas fa-backward" />
         <span class="prev"> Poprzedni ruch </span>
       </div>
       <div class="next-move option">
-        <i class="fas fa-forward"></i>
+        <i class="fas fa-forward" />
         <span class="next"> Następny ruch </span>
       </div>
     </div>
     <div class="game-options">
       <span class="surrender">
-        <i class="fas fa-flag"> </i> Poddaj się
+        <i class="fas fa-flag" /> Poddaj się
       </span>
       <span class="draw">
-        <i class="fas fa-handshake"></i> Remis
+        <i class="fas fa-handshake" /> Remis
       </span>
     </div>
   </div>
@@ -40,14 +40,14 @@ import MovesArray from '@/components/SidePanel/MovesArray.vue';
 
 export default defineComponent({
   name: 'SidePanel',
+  components: {
+    MovesArray,
+  },
   props: {
     moves: {
       type: [] as PropType<RecordMove[]>,
       required: true,
     },
-  },
-  components: {
-    MovesArray,
   },
   methods: {
     getMove(n: number): RecordMove {

@@ -1,6 +1,9 @@
 <template>
   <div class="move">
-    <img :src="generateImageLink()" alt="" />
+    <img
+      :src="generateImageLink()"
+      alt=""
+    >
     <span class="value"> {{ findElem() }} </span>
   </div>
 </template>
@@ -14,7 +17,7 @@ export default defineComponent({
   props: {
     move: {
       type: Object as PropType<RecordMove>,
-      required: false,
+      required: true,
     },
   },
   methods: {

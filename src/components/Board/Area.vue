@@ -1,10 +1,26 @@
 <template>
-  <div class="area" :class="{ blankArea: isBlank }" @click="activated()" :id="position.index"
-  @dragover.prevent @drop.prevent="drop">
-    <div class="wrapper"
-         :class="[{ active: callActivated }, { possibleMove: callMoving },
-         { isCheck: isChecking }, { possibleAttack: callMoving && position.figure }]">
-         <Figure :figure="position.figure" :position="position.index" @choose="activated" />
+  <div
+    :id="position.index"
+    class="area"
+    :class="{ blankArea: isBlank }"
+    @click="activated()"
+    @dragover.prevent
+    @drop.prevent="drop"
+  >
+    <div
+      class="wrapper"
+      :class="[
+        { active: callActivated },
+        { possibleMove: callMoving },
+        { isCheck: isChecking },
+        { possibleAttack: callMoving && position.figure }
+      ]"
+    >
+      <Figure
+        :figure="position.figure"
+        :position="position.index"
+        @choose="activated"
+      />
     </div>
   </div>
 </template>
@@ -25,7 +41,7 @@ export default defineComponent({
       required: true,
     },
     active: {
-      type: Object as PropType<(null | Position)>,
+      type: Object as PropType<null | Position>,
       default() {
         return null;
       },
@@ -35,11 +51,42 @@ export default defineComponent({
       required: true,
     },
   },
+  computed: {
+    isBlank(): boolean {
+      return (
+        (this.position.horizontally.charCodeAt(0)
+          + this.position.perpendicularly)
+          % 2
+        !== 0
+      );
+    },
+    callActivated(): boolean {
+      return this.position === this.active;
+    },
+    callMoving(): boolean {
+      return (
+        this.active !== null
+        && this.active?.figure?.possibleMoving.findIndex(
+          (el) => el === this.position,
+        ) !== -1
+      );
+    },
+    isChecking(): boolean {
+      return (
+        this.player.isChecked
+        && this.position.figure?.type === Types.king
+        && this.player.colour === this.position.figure?.colour
+        && this.position !== this.active
+      );
+    },
+  },
   methods: {
     activated() {
       if (this.position.figure?.colour === this.player.colour) {
         this.$emit('active', this.position);
-      } else if (this.position.handlePosition?.classList.contains('possibleMove')) {
+      } else if (
+        this.position.handlePosition?.classList.contains('possibleMove')
+      ) {
         this.$emit('move', this.active, this.position);
         this.$emit('active', this.active);
       } else if (this.active !== null) {
@@ -50,26 +97,7 @@ export default defineComponent({
       this.activated();
     },
   },
-  computed: {
-    isBlank(): boolean {
-      return ((this.position.horizontally.charCodeAt(0)
-        + this.position.perpendicularly) % 2 !== 0);
-    },
-    callActivated(): boolean {
-      return this.position === this.active;
-    },
-    callMoving(): boolean {
-      return this.active !== null
-        && this.active?.figure?.possibleMoving.findIndex((el) => el === this.position) !== -1;
-    },
-    isChecking(): boolean {
-      return this.player.isChecked && this.position.figure?.type === Types.king
-        && this.player.colour === this.position.figure?.colour
-        && this.position !== this.active;
-    },
-  },
 });
-
 </script>
 
 <style scoped lang="scss">
@@ -94,25 +122,25 @@ export default defineComponent({
 
   .possibleMove {
     &::after {
-      content: '';
+      content: "";
       display: block;
       width: 32%;
       height: 32%;
-      background-color: rgba(#000, .25);
+      background-color: rgba(#000, 0.25);
       border-radius: 50%;
     }
   }
 
   .possibleAttack {
     &::after {
-      content: '';
+      content: "";
       box-sizing: border-box;
       position: absolute;
       display: block;
       width: 100%;
       height: 100%;
       background-color: unset;
-      border: 3px solid rgba(#000, .5);
+      border: 3px solid rgba(#000, 0.5);
     }
   }
 
@@ -129,7 +157,7 @@ export default defineComponent({
   .area {
     .possibleAttack {
       &::after {
-        border: 4px solid rgba(#000, .5);
+        border: 4px solid rgba(#000, 0.5);
       }
     }
   }
@@ -139,7 +167,7 @@ export default defineComponent({
   .area {
     .possibleAttack {
       &::after {
-        border: 5px solid rgba(#000, .5);
+        border: 5px solid rgba(#000, 0.5);
       }
     }
   }
@@ -149,7 +177,7 @@ export default defineComponent({
   .area {
     .possibleAttack {
       &::after {
-        border: 6px solid rgba(#000, .5);
+        border: 6px solid rgba(#000, 0.5);
       }
     }
   }

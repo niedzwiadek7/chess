@@ -1,7 +1,13 @@
 <template>
-  <img class="figure" v-show="figure !== undefined" :src="figure?.path" alt=""
-       :id="`${figure?.name}_${position}`"
-       :draggable="draggable" @dragstart="dragStart" />
+  <img
+    v-show="figure !== undefined"
+    :id="`${figure?.name}_${position}`"
+    class="figure"
+    :src="figure?.path"
+    alt=""
+    :draggable="draggable"
+    @dragstart="dragStart"
+  >
 </template>
 
 <script lang="ts">
@@ -19,6 +25,10 @@ export default defineComponent({
     },
     draggable: {
       type: Object as PropType<any>,
+      required: false,
+      default() {
+        return {};
+      },
     },
     position: {
       type: String as PropType<string>,
@@ -30,8 +40,6 @@ export default defineComponent({
   methods: {
     dragStart(e: any) {
       if (this.figure !== undefined) {
-        e.dataTransfer.dropEffect = 'move';
-        e.dataTransfer.effectAllowed = 'move';
         this.$emit('choose');
       }
     },

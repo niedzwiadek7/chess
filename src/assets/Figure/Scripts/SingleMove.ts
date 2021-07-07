@@ -14,10 +14,14 @@ const callMove = (posMoves: Position[], board: Position[][],
   if (includesInBoard(perpendicularly, horizontally)
     && (board[perpendicularly][horizontally].figure === undefined
       || board[perpendicularly][horizontally].figure?.colour !== figure.colour)) {
-    if (checkingSecurity
-      && safeMoving(actualPosition, board[perpendicularly][horizontally], board, king, figure)) {
+    if (!checkingSecurity
+      || safeMoving(actualPosition, board[perpendicularly][horizontally], board, king, figure)) {
       posMoves.push(board[perpendicularly][horizontally]);
     }
+  }
+
+  if (includesInBoard(perpendicularly, horizontally)) {
+    board[perpendicularly][horizontally].attackedBy.push(actualPosition);
   }
 };
 

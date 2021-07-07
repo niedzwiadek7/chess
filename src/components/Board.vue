@@ -1,28 +1,39 @@
 <template>
   <div class="boardWrapper">
     <div class="board">
-      <PlayerComp :player="white" @endTime = "endTime" />
+      <PlayerComp
+        :player="white"
+        @endTime="endTime"
+      />
       <div class="fieldPlay">
-          <transition-group name="list">
-            <Area v-for="n in 64" :key="board[Math.floor(n / 8)[n % 8]]"
-                  :position="getPosition(n)"
-                  :active = "active"
-                  :player = "player"
-                  @active = "activated"
-                  @move = "move"
-            />
-          </transition-group>
+        <Area
+          v-for="n in 64"
+          :key="board[Math.floor(n / 8)[n % 8]]"
+          :position="getPosition(n)"
+          :active="active"
+          :player="player"
+          @active="activated"
+          @move="move"
+        />
 
         <GroupFieldPerpendicularly />
         <GroupFieldHorizontally />
-
       </div>
-      <PlayerComp :player="black" @endTime = "endTime" />
+      <PlayerComp
+        :player="black"
+        @endTime="endTime"
+      />
     </div>
 
-    <SidePanel :moves="moves" class="side-panel" />
+    <SidePanel
+      :moves="moves"
+      class="side-panel"
+    />
 
-    <EndBox v-if="isEnd" :winner="endGame" />
+    <EndBox
+      v-if="isEnd"
+      :winner="endGame"
+    />
   </div>
 </template>
 
@@ -56,7 +67,7 @@ export default defineComponent({
   data() {
     return {
       board: [] as Position[][],
-      active: null as (Position | null),
+      active: null as Position | null,
       white: {} as Player,
       black: {} as Player,
       player: {} as Player,
@@ -64,6 +75,26 @@ export default defineComponent({
       endGame: {} as EndGame,
       timeMove: {} as Time,
     };
+  },
+  computed: {
+    isEnd(): boolean {
+      return this.endGame.result !== undefined;
+    },
+  },
+  created(): void {
+    this.board = TemplateStartBoard;
+    this.black = PlayerModule.create(this.board, Colour.black);
+    this.white = PlayerModule.create(this.board, Colour.white);
+    this.player = this.white;
+    this.timeMove = { ...this.player.time };
+  },
+  mounted(): void {
+    this.board.forEach((el) => {
+      el.forEach((elem) => {
+        // eslint-disable-next-line no-param-reassign
+        elem.handlePosition = document.querySelector(`#${elem.index}`)?.querySelector('.wrapper') || null;
+      });
+    });
   },
   methods: {
     getPosition(n: number): Position {
@@ -113,42 +144,10 @@ export default defineComponent({
       this.endGame.winner = this.player === this.white ? this.black : this.white;
     },
   },
-  computed: {
-    isEnd(): boolean {
-      return this.endGame.result !== undefined;
-    },
-  },
-  created(): void {
-    this.board = TemplateStartBoard;
-    this.black = PlayerModule.create(this.board, Colour.black);
-    this.white = PlayerModule.create(this.board, Colour.white);
-    this.player = this.white;
-    this.timeMove = { ...this.player.time };
-  },
-  mounted(): void {
-    this.board.forEach((el) => {
-      el.forEach((elem) => {
-        // eslint-disable-next-line no-param-reassign
-        elem.handlePosition = document.querySelector(`#${elem.index}`)?.querySelector('.wrapper') || null;
-      });
-    });
-  },
 });
 </script>
 
 <style lang="scss" scoped>
-
-.list-enter-from, .list-leave-to {
-  opacity: 0;
-}
-.list-leave-active {
-  position: absolute;
-}
-
-.list-move {
-  transition: all 1s ease-in-out;
-}
-
 .boardWrapper {
   position: relative;
   margin: 0;

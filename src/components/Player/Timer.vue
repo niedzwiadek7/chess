@@ -1,6 +1,6 @@
 <template>
   <div :class="{'timer': true, 'active': timer.measure}">
-    <i class="clock fas fa-stopwatch"></i>
+    <i class="clock fas fa-stopwatch" />
     <span class="time">
       {{ timer.minutes }} : {{ styleSeconds(timer.seconds) }}
     </span>
@@ -25,12 +25,6 @@ export default defineComponent({
       interval: 0 as number,
     };
   },
-  methods: {
-    styleSeconds(value: number) {
-      if (value < 10) return `0${value}`;
-      return value;
-    },
-  },
   mounted() {
     this.interval = setInterval(() => {
       if (this.time.measure) {
@@ -46,6 +40,12 @@ export default defineComponent({
         }
       }
     }, 1000);
+  },
+  methods: {
+    styleSeconds(value: number) {
+      if (value < 10) return `0${value}`;
+      return value;
+    },
   },
 });
 </script>
