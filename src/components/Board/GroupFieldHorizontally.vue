@@ -1,6 +1,10 @@
 <template>
   <div class="groupFieldHorizontally">
-    <div class="fieldDescription" v-for="n in 8" :key="n">
+    <div
+      v-for="n in 8"
+      :key="n"
+      class="fieldDescription"
+    >
       {{ String.fromCharCode(64+n) }}
     </div>
   </div>
@@ -10,7 +14,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'groupFieldHorizontally',
+  name: 'GroupFieldHorizontally',
 });
 </script>
 

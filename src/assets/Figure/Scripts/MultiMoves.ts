@@ -27,6 +27,8 @@ const callMove = (posMoves: Position[], board: Position[][],
       || safeMoving(actualPosition, board[perpendicularly][horizontally], board, king, figure)) {
         posMoves.push(board[perpendicularly][horizontally]);
       }
+    } else if (includesInBoard(perpendicularly, horizontally)) {
+      board[perpendicularly][horizontally].attackedBy.push(actualPosition);
     }
   }
 };

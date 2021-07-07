@@ -1,6 +1,12 @@
 <template>
   <div class="groupFieldPerpendicularly">
-    <div class="fieldDescription" v-for="n in 8" :key="n"> {{ n }} </div>
+    <div
+      v-for="n in 8"
+      :key="n"
+      class="fieldDescription"
+    >
+      {{ n }}
+    </div>
   </div>
 </template>
 

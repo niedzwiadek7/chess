@@ -54,7 +54,7 @@ class PlayerModule {
     const fig: Position[] = PlayerModule.findFigures(board, col);
     const kin: Position = PlayerModule.findKing(fig);
     const pos: Position[] = PlayerModule.handleAllPossibleMoves(fig, board, kin, true);
-    const check: boolean = PlayerModule.isChecked(kin);
+    const check = false;
 
     return {
       name: 'Damian',

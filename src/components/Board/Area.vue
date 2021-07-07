@@ -1,10 +1,22 @@
 <template>
-  <div class="area" :class="{ blankArea: isBlank }" @click="activated()" :id="position.index"
-  @dragover.prevent @drop.prevent="drop">
-    <div class="wrapper"
-         :class="[{ active: callActivated }, { possibleMove: callMoving },
-         { isCheck: isChecking }, { possibleAttack: callMoving && position.figure }]">
-         <Figure :figure="position.figure" :position="position.index" @choose="activated" />
+  <div
+    :id="position.index"
+    class="area"
+    :class="{ blankArea: isBlank }"
+    @click="activated()"
+    @dragover.prevent
+    @drop.prevent="drop"
+  >
+    <div
+      class="wrapper"
+      :class="[{ active: callActivated }, { possibleMove: callMoving },
+               { isCheck: isChecking }, { possibleAttack: callMoving && position.figure }]"
+    >
+      <Figure
+        :figure="position.figure"
+        :position="position.index"
+        @choose="activated"
+      />
     </div>
   </div>
 </template>
@@ -35,21 +47,6 @@ export default defineComponent({
       required: true,
     },
   },
-  methods: {
-    activated() {
-      if (this.position.figure?.colour === this.player.colour) {
-        this.$emit('active', this.position);
-      } else if (this.position.handlePosition?.classList.contains('possibleMove')) {
-        this.$emit('move', this.active, this.position);
-        this.$emit('active', this.active);
-      } else if (this.active !== null) {
-        this.$emit('active', this.active);
-      }
-    },
-    drop(e: any) {
-      this.activated();
-    },
-  },
   computed: {
     isBlank(): boolean {
       return ((this.position.horizontally.charCodeAt(0)
@@ -66,6 +63,21 @@ export default defineComponent({
       return this.player.isChecked && this.position.figure?.type === Types.king
         && this.player.colour === this.position.figure?.colour
         && this.position !== this.active;
+    },
+  },
+  methods: {
+    activated() {
+      if (this.position.figure?.colour === this.player.colour) {
+        this.$emit('active', this.position);
+      } else if (this.position.handlePosition?.classList.contains('possibleMove')) {
+        this.$emit('move', this.active, this.position);
+        this.$emit('active', this.active);
+      } else if (this.active !== null) {
+        this.$emit('active', this.active);
+      }
+    },
+    drop(e: any) {
+      this.activated();
     },
   },
 });

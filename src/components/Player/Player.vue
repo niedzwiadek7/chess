@@ -1,13 +1,22 @@
 <template>
   <div class="wrapper">
     <div class="player">
-      <img src="https://www.chess.com/bundles/web/images/user-image.007dad08.svg" class="photo">
+      <img
+        src="https://www.chess.com/bundles/web/images/user-image.007dad08.svg"
+        class="photo"
+      >
       <div class="info-wrapper">
         <span class="name"> {{ player.name }} </span>
-        <BrokenFigures :figures="player.broken" :colour="opponentPlayer()" />
+        <BrokenFigures
+          :figures="player.broken"
+          :colour="opponentPlayer()"
+        />
       </div>
     </div>
-    <Timer :time="player.time" @endTime="fun" />
+    <Timer
+      :time="player.time"
+      @endTime="fun"
+    />
   </div>
 </template>
 

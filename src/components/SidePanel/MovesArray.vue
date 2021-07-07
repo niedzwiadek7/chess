@@ -1,21 +1,34 @@
 <template>
-  <div class="list" ref="list">
-    <div v-for="n in Math.floor((moves.length+1)/2)" :key="n" class="queue">
-      <div class="number"> {{ n }}. </div>
+  <div
+    ref="list"
+    class="list"
+  >
+    <div
+      v-for="n in Math.floor((moves.length+1)/2)"
+      :key="n"
+      class="queue"
+    >
+      <div class="number">
+        {{ n }}.
+      </div>
 
       <div class="element">
         <Move :move="getMove(2*(n-1))" />
       </div>
 
       <div class="element">
-        <Move v-show="getMove(2*(n-1)+1) !== undefined"
-              :move="getMove(2*(n-1)+1)" />
+        <Move
+          v-show="getMove(2*(n-1)+1) !== undefined"
+          :move="getMove(2*(n-1)+1)"
+        />
       </div>
 
       <div class="time">
         <TimeComponent :time="moves[2*(n-1)].time" />
-        <TimeComponent v-show="getMove(2*(n-1)+1) !== undefined"
-              :time="moves[2*(n-1)+1]?.time" />
+        <TimeComponent
+          v-show="getMove(2*(n-1)+1) !== undefined"
+          :time="moves[2*(n-1)+1]?.time"
+        />
       </div>
     </div>
   </div>
@@ -39,6 +52,9 @@ export default defineComponent({
       required: true,
     },
   },
+  updated() {
+    this.scrollToEnd();
+  },
   methods: {
     getMove(n: number): RecordMove {
       return this.moves[n];
@@ -47,9 +63,6 @@ export default defineComponent({
       const content: HTMLDivElement = (this.$refs.list as HTMLDivElement);
       content.scrollTop = content.scrollHeight;
     },
-  },
-  updated() {
-    this.scrollToEnd();
   },
 });
 </script>

@@ -1,7 +1,13 @@
 <template>
-  <img class="figure" v-show="figure !== undefined" :src="figure?.path" alt=""
-       :id="`${figure?.name}_${position}`"
-       :draggable="draggable" @dragstart="dragStart" />
+  <img
+    v-show="figure !== undefined"
+    :id="`${figure?.name}_${position}`"
+    class="figure"
+    :src="figure?.path"
+    alt=""
+    :draggable="draggable"
+    @dragstart="dragStart"
+  >
 </template>
 
 <script lang="ts">

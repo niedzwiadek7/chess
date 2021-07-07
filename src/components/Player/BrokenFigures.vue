@@ -1,29 +1,70 @@
 <template>
   <div class="brokenFigures">
-    <span class="wrapper" v-if="figureCount('pawn') > 0 || true"
-      :style="`max-width: ${imgWidth+((figureCount('pawn') -1) * (imgWidth / 2))}px`">
-      <img v-for="n in figureCount('pawn')" :key="n" ref="img"
-           class="figure" :src="pawn.path" :style="`transform: translateX(${-55*(n-1)}%)`">
+    <span
+      v-if="figureCount('pawn') > 0 || true"
+      class="wrapper"
+      :style="`max-width: ${imgWidth+((figureCount('pawn') -1) * (imgWidth / 2))}px`"
+    >
+      <img
+        v-for="n in figureCount('pawn')"
+        :key="n"
+        ref="img"
+        class="figure"
+        :src="pawn.path"
+        :style="`transform: translateX(${-55*(n-1)}%)`"
+      >
     </span>
-    <span class="wrapper" v-if="figureCount('knight') > 0 || true"
-          :style="`max-width: ${imgWidth+((figureCount('knight') -1) * (imgWidth / 2))}px`">
-      <img v-for="n in figureCount('knight')" :key="n"
-           class="figure" :src="knight.path" :style="`transform: translateX(${-55*(n-1)}}%)`">
+    <span
+      v-if="figureCount('knight') > 0 || true"
+      class="wrapper"
+      :style="`max-width: ${imgWidth+((figureCount('knight') -1) * (imgWidth / 2))}px`"
+    >
+      <img
+        v-for="n in figureCount('knight')"
+        :key="n"
+        class="figure"
+        :src="knight.path"
+        :style="`transform: translateX(${-55*(n-1)}}%)`"
+      >
     </span>
-    <span class="wrapper" v-if="figureCount('bishop') > 0 || true"
-          :style="`max-width: ${imgWidth+((figureCount('bishop') -1) * (imgWidth / 2))}px`">
-      <img v-for="n in figureCount('bishop')" :key="n"
-           class="figure" :src="bishop.path" :style="`transform: translateX(${-55*(n-1)}%)`">
+    <span
+      v-if="figureCount('bishop') > 0 || true"
+      class="wrapper"
+      :style="`max-width: ${imgWidth+((figureCount('bishop') -1) * (imgWidth / 2))}px`"
+    >
+      <img
+        v-for="n in figureCount('bishop')"
+        :key="n"
+        class="figure"
+        :src="bishop.path"
+        :style="`transform: translateX(${-55*(n-1)}%)`"
+      >
     </span>
-    <span class="wrapper" v-if="figureCount('rook') > 0 || true"
-          :style="`max-width: ${imgWidth+((figureCount('rook') -1) * (imgWidth / 2))}px`">
-      <img v-for="n in figureCount('rook')" :key="n"
-           class="figure" :src="rook.path" :style="`transform: translateX(${-55*(n-1)}%)`">
+    <span
+      v-if="figureCount('rook') > 0 || true"
+      class="wrapper"
+      :style="`max-width: ${imgWidth+((figureCount('rook') -1) * (imgWidth / 2))}px`"
+    >
+      <img
+        v-for="n in figureCount('rook')"
+        :key="n"
+        class="figure"
+        :src="rook.path"
+        :style="`transform: translateX(${-55*(n-1)}%)`"
+      >
     </span>
-    <span class="wrapper" v-if="figureCount('queen') > 0 || true"
-          :style="`max-width: ${imgWidth+((figureCount('queen') -1) * (imgWidth / 2))}px`">
-      <img v-for="n in figureCount('queen')" :key="n"
-           class="figure" :src="queen.path" :style="`transform: translateX(${-55*(n-1)}%)`">
+    <span
+      v-if="figureCount('queen') > 0 || true"
+      class="wrapper"
+      :style="`max-width: ${imgWidth+((figureCount('queen') -1) * (imgWidth / 2))}px`"
+    >
+      <img
+        v-for="n in figureCount('queen')"
+        :key="n"
+        class="figure"
+        :src="queen.path"
+        :style="`transform: translateX(${-55*(n-1)}%)`"
+      >
     </span>
   </div>
 </template>
@@ -61,6 +102,12 @@ export default defineComponent({
       imgWidth: 0 as number,
     };
   },
+  mounted() {
+    window.onresize = () => {
+      const img: (HTMLImageElement | undefined) = (this.$refs.im as (HTMLImageElement | undefined));
+      if (img !== undefined) this.imgWidth = img.clientWidth;
+    };
+  },
   methods: {
     figureCount(typeValue: string): number {
       const type = typeValue as Types;
@@ -70,12 +117,6 @@ export default defineComponent({
       });
       return count;
     },
-  },
-  mounted() {
-    window.onresize = () => {
-      const img: (HTMLImageElement | undefined) = (this.$refs.im as (HTMLImageElement | undefined));
-      if (img !== undefined) this.imgWidth = img.clientWidth;
-    };
   },
 });
 </script>
