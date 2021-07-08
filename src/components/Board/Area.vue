@@ -53,12 +53,8 @@ export default defineComponent({
   },
   computed: {
     isBlank(): boolean {
-      return (
-        (this.position.horizontally.charCodeAt(0)
-          + this.position.perpendicularly)
-          % 2
-        !== 0
-      );
+      return ((this.position.horizontally.charCodeAt(0)
+        + this.position.perpendicularly) % 2 !== 0);
     },
     callActivated(): boolean {
       return this.position === this.active;
