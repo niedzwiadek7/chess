@@ -3,12 +3,12 @@
     <span
       v-if="figureCount('pawn') > 0 || true"
       class="wrapper"
-      :style="`max-width: ${imgWidth+((figureCount('pawn') -1) * (imgWidth / 2))}px`"
+      :style="`max-width: ${imgWidth+((figureCount('pawn') -1) * (imgWidth * 0.45))}px`"
     >
       <img
         v-for="n in figureCount('pawn')"
         :key="n"
-        ref="img"
+        alt=""
         class="figure"
         :src="pawn.path"
         :style="`transform: translateX(${-55*(n-1)}%)`"
@@ -17,24 +17,26 @@
     <span
       v-if="figureCount('knight') > 0 || true"
       class="wrapper"
-      :style="`max-width: ${imgWidth+((figureCount('knight') -1) * (imgWidth / 2))}px`"
+      :style="`max-width: ${imgWidth+((figureCount('knight') -1) * (imgWidth * 0.45))}px`"
     >
       <img
         v-for="n in figureCount('knight')"
         :key="n"
+        alt=""
         class="figure"
         :src="knight.path"
-        :style="`transform: translateX(${-55*(n-1)}}%)`"
+        :style="`transform: translateX(${-55*(n-1)}%)`"
       >
     </span>
     <span
       v-if="figureCount('bishop') > 0 || true"
       class="wrapper"
-      :style="`max-width: ${imgWidth+((figureCount('bishop') -1) * (imgWidth / 2))}px`"
+      :style="`max-width: ${imgWidth+((figureCount('bishop') -1) * (imgWidth * 0.45))}px`"
     >
       <img
         v-for="n in figureCount('bishop')"
         :key="n"
+        alt=""
         class="figure"
         :src="bishop.path"
         :style="`transform: translateX(${-55*(n-1)}%)`"
@@ -43,11 +45,12 @@
     <span
       v-if="figureCount('rook') > 0 || true"
       class="wrapper"
-      :style="`max-width: ${imgWidth+((figureCount('rook') -1) * (imgWidth / 2))}px`"
+      :style="`max-width: ${imgWidth+((figureCount('rook') -1) * (imgWidth * 0.45))}px`"
     >
       <img
         v-for="n in figureCount('rook')"
         :key="n"
+        alt=""
         class="figure"
         :src="rook.path"
         :style="`transform: translateX(${-55*(n-1)}%)`"
@@ -56,11 +59,12 @@
     <span
       v-if="figureCount('queen') > 0 || true"
       class="wrapper"
-      :style="`max-width: ${imgWidth+((figureCount('queen') -1) * (imgWidth / 2))}px`"
+      :style="`max-width: ${imgWidth+((figureCount('queen') -1) * (imgWidth * 0.45))}px`"
     >
       <img
         v-for="n in figureCount('queen')"
         :key="n"
+        alt=""
         class="figure"
         :src="queen.path"
         :style="`transform: translateX(${-55*(n-1)}%)`"
@@ -99,14 +103,12 @@ export default defineComponent({
       bishop: new Bishop(this.colour),
       rook: new Rook(this.colour),
       queen: new Queen(this.colour),
-      imgWidth: 0 as number,
+      imgWidth: 15 as number,
     };
   },
   mounted() {
-    window.onresize = () => {
-      const img: (HTMLImageElement | undefined) = (this.$refs.im as (HTMLImageElement | undefined));
-      if (img !== undefined) this.imgWidth = img.clientWidth;
-    };
+    this.widthOperation();
+    window.addEventListener('resize', this.widthOperation);
   },
   methods: {
     figureCount(typeValue: string): number {
@@ -116,6 +118,13 @@ export default defineComponent({
         if (figure.type === type) count += 1;
       });
       return count;
+    },
+    widthOperation() {
+      const widthInner = window.innerWidth;
+      if (widthInner < 600) this.imgWidth = 15;
+      else if (widthInner < 1024) this.imgWidth = 20;
+      else if (widthInner < 1440) this.imgWidth = 25;
+      else this.imgWidth = 30;
     },
   },
 });
@@ -143,10 +152,31 @@ export default defineComponent({
 @media (min-width: 600px) {
   .brokenFigures {
     .wrapper {
-      padding-right: 5px;
       img {
         width: 20px;
         height: 20px;
+      }
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .brokenFigures {
+    .wrapper {
+      img {
+        width: 25px;
+        height: 25px;
+      }
+    }
+  }
+}
+
+@media (min-width: 1440px) {
+  .brokenFigures {
+    .wrapper {
+      img {
+        width: 30px;
+        height: 30px;
       }
     }
   }

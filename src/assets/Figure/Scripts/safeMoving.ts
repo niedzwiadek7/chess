@@ -102,17 +102,16 @@ export default function (
       }
     } else if (newPosition.attackedBy.filter((pos) => attackByOpponent(pos, king)).length === 0) {
       if (
-        figuresAttack[0].figure?.type === Types.bishop ||
-        figuresAttack[0].figure?.type === Types.rook ||
-        figuresAttack[0].figure?.type === Types.queen
+        figuresAttack[0].figure?.type === Types.bishop
+        || figuresAttack[0].figure?.type === Types.rook
+        || figuresAttack[0].figure?.type === Types.queen
       ) {
         const directionFig = directionFigure(king, figuresAttack[0]);
         const directionKing = directionFigure(newPosition, oldPosition);
         if (
-          directionFig.horizontally === directionKing.horizontally &&
-          directionFig.perpendicularly === directionKing.perpendicularly
-        )
-          return false;
+          directionFig.horizontally === directionKing.horizontally
+          && directionFig.perpendicularly === directionKing.perpendicularly
+        ) return false;
       }
       return true;
     }
